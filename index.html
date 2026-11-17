@@ -236,13 +236,14 @@ footer{flex:none;height:40px;display:flex;align-items:center;justify-content:cen
   }
   function landText(t){
     var k=VI.landingTopic(t);
-    if(k==='email')return gotEmail(t);
+    if(k==='email')return gotEmail(t,VI.extractEmail(t));
     // Asked for the email: anything that isn't an email or a real question gets the email question again.
     if(L.mode==='email'&&(!k||k==='join')){S.busy=true;bubble('u',t);say(["That doesn't look like an email. Try again?"],function(){S.busy=false;landChips()});return}
     topic(k,t);
   }
-  function gotEmail(v){
-    S.busy=true;bubble('u',v);U.chips.textContent='';L.email=v;
+  // said = what the visitor typed; email = the address pulled out of it, already trimmed + lowercased (one casing everywhere).
+  function gotEmail(said,email){
+    S.busy=true;bubble('u',said);U.chips.textContent='';L.email=email;
     if(refNow)return signup();
     L.mode='ref';landPrompt();
     say(['Thanks! Did someone invite you? Type their name or code.'],function(){S.busy=false;landChips()});
@@ -260,7 +261,7 @@ footer{flex:none;height:40px;display:flex;align-items:center;justify-content:cen
     post('',{email:L.email,ref:refNow}).then(function(r){
       if(r.status==='done'){S.cfg={chat:r.chat||{}};L.mode='done';say([C('alreadyDone',"You're already on the list.")]);return}
       if(!r.interview||!r.token||!(r.interview.questions||[]).length){L.mode='done';say(["You're on the list."]);return}
-      start(r,L.email.toLowerCase());
+      start(r,L.email);
     }).catch(function(){
       L.mode='email';U.say.hidden=false;landPrompt();
       say(['Something went wrong. Type your email to try again.'],function(){S.busy=false;landChips()});

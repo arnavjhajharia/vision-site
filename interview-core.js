@@ -116,13 +116,19 @@
     return new RegExp('(^|[^a-z0-9])' + esc(String(kw).toLowerCase()) + 's?($|[^a-z0-9])', 'i').test(text);
   }
 
+  // First email-looking token in free text ("my email is Me@X.com."), trimmed and lowercased; '' when there is none.
+  function extractEmail(raw) {
+    var m = String(raw == null ? '' : raw).match(/[a-z0-9._%+'-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}/i);
+    return m ? m[0].toLowerCase() : '';
+  }
+
   function isEmail(s) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(s == null ? '' : s).trim()); }
 
   // Typed landing text -> topic id ('email' when it looks like an email address), or '' when nothing matched.
   function landingTopic(raw) {
     var text = String(raw == null ? '' : raw).toLowerCase().replace(/\s+/g, ' ').trim();
     if (!text) return '';
-    if (isEmail(text)) return 'email';
+    if (extractEmail(text)) return 'email';
     for (var i = 0; i < TOPICS.length; i++) {
       var t = TOPICS[i];
       for (var j = 0; j < t.match.length; j++) {
@@ -228,6 +234,6 @@
   }
 
   var api = { fill: fill, variantFor: variantFor, resolve: resolve, matchText: matchText, reaction: reaction, firstOpen: firstOpen, joinAnd: joinAnd, normalizeRef: normalizeRef,
-    isEmail: isEmail, landingTopic: landingTopic, landingChips: landingChips, landingReply: landingReply, landingNudge: landingNudge, refFromText: refFromText, TOPICS: TOPICS };
+    isEmail: isEmail, extractEmail: extractEmail, landingTopic: landingTopic, landingChips: landingChips, landingReply: landingReply, landingNudge: landingNudge, refFromText: refFromText, TOPICS: TOPICS };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.VisionInterview = api;
 })(typeof window !== 'undefined' ? window : this);

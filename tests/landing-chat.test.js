@@ -123,3 +123,19 @@ test('refFromText: nothing is accepted before ambassadors.json loads', () => {
   assert.equal(VI.refFromText('manya', null), '');
   assert.equal(VI.refFromText('manya'), '');
 });
+
+test('extractEmail: pulls the address out of a sentence, normalized', () => {
+  assert.equal(VI.extractEmail('my email is Me@X.com'), 'me@x.com');
+  assert.equal(VI.extractEmail('sign me up: me@x.com.'), 'me@x.com');
+  assert.equal(VI.extractEmail('  John.Doe+vision@Mail.Example.io  '), 'john.doe+vision@mail.example.io');
+  assert.equal(VI.extractEmail('(you@y.io), thanks!'), 'you@y.io');
+  assert.equal(VI.extractEmail('john gmail.com'), '');
+  assert.equal(VI.extractEmail('a@b'), '');
+  assert.equal(VI.extractEmail(null), '');
+});
+
+test('landingTopic: an email inside a sentence wins over the email/join keywords', () => {
+  assert.equal(VI.landingTopic('my email is me@x.com'), 'email');
+  assert.equal(VI.landingTopic('sign me up: me@x.com'), 'email');
+  assert.equal(VI.landingTopic('does it handle my email?'), 'features');
+});
