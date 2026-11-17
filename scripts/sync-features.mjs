@@ -7,8 +7,12 @@
 // (e.g. --ref origin/main) without checking it out.
 //
 // Rules:
-//  - One entry per module, id "module:<id>", source "module". Name, description and category are
-//    refreshed from the manifest on every run.
+//  - One entry per module, id "module:<id>", source "module". Name and description are refreshed
+//    from the manifest on every run.
+//  - category is one of the ids in the top-level "categories" block (essential / productivity / builder).
+//    An existing valid category is NEVER overwritten: regroup by hand in features.json. New modules take the
+//    manifest's "category" if it is a valid id, else --category <id> (default: productivity).
+//  - The "categories" block and other top-level keys are preserved as-is.
 //  - status is NEVER overwritten once set: edit it by hand in features.json (live/building/planned).
 //    New modules start as "building".
 //  - "source": "manual" entries are never touched. Modules that disappear from the manifests are kept
@@ -27,6 +31,7 @@ const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] :
 const repo = resolve(site, opt('--repo', '../public-vision'));
 const ref = opt('--ref', null);
 const dry = args.includes('--dry');
+const defaultCat = opt('--category', 'productivity');
 const STATUSES = new Set(['live', 'building', 'planned']);
 
 function readManifests() {
@@ -55,6 +60,9 @@ if (!manifests.length) {
   process.exit(1);
 }
 
+const CATS = new Set((data.categories || []).map(c => c.id));
+if (!CATS.size) { console.error('features.json has no "categories" block. Nothing changed.'); process.exit(1); }
+if (!CATS.has(defaultCat)) { console.error(`--category ${defaultCat} is not one of: ${[...CATS].join(', ')}`); process.exit(1); }
 const byId = new Map(data.features.map(f => [f.id, f]));
 const seen = new Set();
 let added = 0, updated = 0;
@@ -65,13 +73,13 @@ for (const m of manifests) {
   const next = {
     id,
     name: m.name,
-    category: 'Modules',
+    category: prev && CATS.has(prev.category) ? prev.category : (CATS.has(m.category) ? m.category : defaultCat),
     status: prev && STATUSES.has(prev.status) ? prev.status : 'building',
     source: 'module',
     description: String(m.description || '').trim(),
   };
-  if (!prev) { data.features.push(next); byId.set(id, next); added++; continue; }
-  const merged = { ...prev, ...next, category: prev.category || next.category };
+  if (!prev) { data.features.push({ ...next, area: 'Modules' }); byId.set(id, next); added++; continue; }
+  const merged = { ...prev, ...next };
   delete merged.removed;
   if (JSON.stringify(merged) !== JSON.stringify(prev)) updated++;
   Object.keys(prev).forEach(k => delete prev[k]);
@@ -86,5 +94,9 @@ data.updated = new Date().toISOString().slice(0, 10);
 const counts = { live: 0, building: 0, planned: 0 };
 for (const f of data.features) if (!f.removed && counts[f.status] !== undefined) counts[f.status]++;
 console.log(`${manifests.length} manifests: +${added} new, ${updated} updated, ${removed} marked removed.`);
+const perCat = {}; for (const f of data.features) if (!f.removed) perCat[f.category] = (perCat[f.category] || 0) + 1;
+const stray = data.features.filter(f => !f.removed && !CATS.has(f.category)).map(f => f.id);
+if (stray.length) console.warn(`Warning: unknown category on ${stray.join(', ')}`);
+console.log(`Categories: ${Object.entries(perCat).map(([k, v]) => `${k} ${v}`).join(', ')}`);
 console.log(`Totals: ${data.features.filter(f => !f.removed).length} features, live ${counts.live}, building ${counts.building}, planned ${counts.planned}`);
 if (!dry) writeFileSync(path, JSON.stringify(data, null, 2) + '\n');

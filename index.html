@@ -97,6 +97,19 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 .s-planned i{border:1.5px dashed var(--dim)}.s-planned{color:var(--dim)}
 .counts .badge{padding:0;align-self:center}
 .feat .empty{margin-top:24px;color:var(--dim);font-size:14px}
+.about{margin-top:22px;padding:20px 22px;border:1px solid var(--rule);border-left:2px solid var(--glow);border-radius:2px;max-width:68ch}
+.about .one{font-family:var(--pixel);font-weight:500;font-size:clamp(17px,1.9vw,21px);line-height:1.35}
+.about .big{margin-top:10px;color:var(--soft);font-size:15px;line-height:1.65}
+.about.mini{margin-top:48px;padding:16px 18px}.about.mini .one{font-size:16px}.about.mini .big{font-size:14px;margin-top:6px}
+.grp{margin-top:52px}.grp:first-child{margin-top:36px}
+.grp-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px}
+.grp-h h3{font-family:var(--pixel);font-weight:500;font-size:clamp(20px,2.4vw,26px);line-height:1.2}
+.grp-h .ct{font:400 12px var(--mono);color:var(--dim)}
+.pill{font:400 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:2px;border:1px solid var(--rule);color:var(--soft)}
+.pill.inc{border-color:var(--glow);color:var(--ink);background:rgba(59,82,255,.14)}
+.grp .tag{margin-top:6px;color:var(--soft);font-size:14px;line-height:1.55;max-width:62ch}
+.grp .rows{margin-top:14px;border-top:1px solid var(--rule)}
+.fi .a{font:400 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin-left:8px;white-space:nowrap}
 .feat footer{margin-top:56px}
 @media (max-width:560px){.fi{grid-template-columns:1fr}.badge{grid-column:1;grid-row:auto;order:-1;padding:0 0 4px}.fi .n{font-size:16px}}
 </style>
@@ -139,9 +152,17 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 
 <section class="feat" id="features" aria-labelledby="feat-h">
   <h2 id="feat-h">Features</h2>
-  <p class="lede">Everything Vision does today, what we're building, and what's next.</p>
+  <div class="about">
+    <p class="one">A personal AI assistant that lives in your chat apps.</p>
+    <p class="big">Vision sits in WhatsApp and Telegram and takes the busywork off your plate: it triages your email, runs your calendar, ships code and makes sure reminders actually ring. It remembers every conversation, so you never repeat yourself. And it never sends, posts or books anything outward until you say OK.</p>
+  </div>
+  <p class="lede">Everything Vision does today, what we're building, and what's next. Essential is in every Vision; add the other two as you need them.</p>
   <div class="counts" id="feat-counts" role="group" aria-label="Filter by status"></div>
   <div id="feat-list"><p class="empty">Loading features…</p></div>
+  <div class="about mini" aria-label="What Vision is">
+    <p class="one">Vision: your assistant, inside your chats.</p>
+    <p class="big">Email, calendar, code and reminders handled from WhatsApp or Telegram. It remembers everything, and nothing goes out without your OK.</p>
+  </div>
   <footer><span>Vision</span><span class="r" id="feat-upd"></span></footer>
 </section>
 
@@ -217,23 +238,27 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 <script>
 (function(){
   var LABEL={live:'Live',building:'Building',planned:'Planned'},ORDER=['live','building','planned'];
-  var countsEl=document.getElementById('feat-counts'),list=document.getElementById('feat-list'),filter=null,all=[];
+  var countsEl=document.getElementById('feat-counts'),list=document.getElementById('feat-list'),filter=null,all=[],CATS=[];
   function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function render(){
     var c={live:0,building:0,planned:0};all.forEach(function(f){c[f.status]++});
     var h='<button type="button" data-s="" aria-pressed="'+(!filter)+'"><b>'+all.length+'</b> All</button>';
     ORDER.forEach(function(s){h+='<button type="button" class="s-'+s+'" data-s="'+s+'" aria-pressed="'+(filter===s)+'"><span class="badge s-'+s+'" style="padding:0"><i></i></span><b>'+c[s]+'</b> '+LABEL[s]+'</button>'});
     countsEl.innerHTML=h;
-    var cats=[],by={};
-    all.forEach(function(f){if(filter&&f.status!==filter)return;var k=f.category||'Other';if(!by[k]){by[k]=[];cats.push(k)}by[k].push(f)});
-    list.innerHTML=cats.map(function(k){
-      var items=by[k].slice().sort(function(a,b){return ORDER.indexOf(a.status)-ORDER.indexOf(b.status)});
-      return '<div class="cat"><h3>'+esc(k)+'</h3>'+items.map(function(f){
-        return '<div class="fi"><span class="n">'+esc(f.name)+'</span><span class="badge s-'+f.status+'"><i></i>'+LABEL[f.status]+'</span><span class="d">'+esc(f.description||'')+'</span></div>'}).join('')+'</div>'
-    }).join('')||'<p class="empty">Nothing here yet.</p>';
+    var groups=CATS.length?CATS:[{id:'',name:'Features',essential:true}],by={};
+    all.forEach(function(f){var k=f.category||'';if(!CATS.some(function(c){return c.id===k}))k=groups[groups.length-1].id;(by[k]=by[k]||[]).push(f)});
+    list.innerHTML=groups.map(function(g){
+      var mine=by[g.id]||[],items=mine.filter(function(f){return !filter||f.status===filter}).sort(function(a,b){return ORDER.indexOf(a.status)-ORDER.indexOf(b.status)});
+      var cnt=filter?items.length+' of '+mine.length:mine.length+' features';
+      return '<div class="grp" id="grp-'+esc(g.id)+'"><div class="grp-h"><h3>'+esc(g.name)+'</h3><span class="pill'+(g.essential?' inc':'')+'">'+(g.essential?'Included':'Choose to add')+'</span><span class="ct">'+cnt+'</span></div>'+
+        (g.tagline?'<p class="tag">'+esc(g.tagline)+'</p>':'')+'<div class="rows">'+
+        (items.map(function(f){
+          return '<div class="fi"><span class="n">'+esc(f.name)+(f.area?'<span class="a">'+esc(f.area)+'</span>':'')+'</span><span class="badge s-'+f.status+'"><i></i>'+LABEL[f.status]+'</span><span class="d">'+esc(f.description||'')+'</span></div>'}).join('')||'<p class="empty">Nothing '+(filter?LABEL[filter].toLowerCase()+' ':'')+'here yet.</p>')+'</div></div>'
+    }).join('');
   }
   countsEl.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;filter=b.getAttribute('data-s')||null;render()});
   fetch('features.json',{cache:'no-cache'}).then(function(r){return r.json()}).then(function(d){
+    CATS=(d.categories||[]).slice().sort(function(a,b){return (b.essential?1:0)-(a.essential?1:0)});
     all=(d.features||[]).filter(function(f){return !f.removed&&LABEL[f.status]});
     if(d.updated)document.getElementById('feat-upd').textContent='Updated '+d.updated;
     render();
