@@ -73,6 +73,20 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 .wl button{background:var(--ink);color:#000;border:0;font:500 14px var(--sans);padding:12px 18px;border-radius:2px;cursor:pointer}
 .wl button:disabled{opacity:.5;cursor:default}
 .wl .msg{font-family:var(--pixel);font-size:.8em;min-height:1.4em;color:var(--soft)}
+.iv{margin-top:6px;padding:18px;border:1px solid var(--rule);border-left:2px solid var(--glow);border-radius:2px;display:flex;flex-direction:column;gap:12px}
+.iv[hidden],.wl .row[hidden]{display:none}
+.iv .st{font:400 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.iv .bar{height:2px;background:var(--rule)}.iv .bar i{display:block;height:100%;background:var(--glow);transition:width .3s var(--ease)}
+.iv .q{font-family:var(--pixel);font-weight:500;font-size:17px;line-height:1.35}
+.iv .h{color:var(--soft);font-size:13px}
+.iv .opts{display:flex;flex-wrap:wrap;gap:8px}
+.wl .iv .opts button{background:transparent;color:var(--soft);border:1px solid var(--rule);font:400 14px var(--sans);padding:10px 12px}
+.wl .iv .opts button[aria-pressed="true"]{color:var(--ink);border-color:var(--glow);background:rgba(59,82,255,.14)}
+.iv .nav{display:flex;gap:8px;justify-content:space-between;align-items:center}
+.wl .iv .nav .back{background:transparent;color:var(--dim);padding:10px 0}
+.iv .price{font-family:var(--pixel);font-size:clamp(30px,5vw,44px);line-height:1.1}
+.iv .price small{font-size:.4em;color:var(--soft)}
+.iv .fine{color:var(--dim);font-size:12px;line-height:1.5}
 .tabs{position:fixed;top:0;right:0;z-index:5;display:flex;gap:4px;padding:max(14px,env(safe-area-inset-top,0px)) max(var(--pad),env(safe-area-inset-right,0px)) 0 0}
 .tabs a{font:400 12px var(--mono);letter-spacing:.04em;color:var(--dim);text-decoration:none;padding:6px 10px;border:1px solid transparent;border-radius:2px;background:rgba(10,10,10,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .tabs a:hover{color:var(--ink)}
@@ -112,15 +126,22 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 .fi .a{font:400 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin-left:8px;white-space:nowrap}
 .feat footer{margin-top:56px}
 @media (max-width:560px){.fi{grid-template-columns:1fr}.badge{grid-column:1;grid-row:auto;order:-1;padding:0 0 4px}.fi .n{font-size:16px}}
+.ico{display:inline-block;width:1em;height:1em;flex:none;vertical-align:-.14em}
+.hero-in{display:flex;flex-direction:column;align-items:center}
+.via{margin-top:clamp(14px,2.2vw,24px);display:inline-flex;align-items:center;gap:8px;font:400 clamp(12px,1.1vw,14px) var(--mono);letter-spacing:.04em;color:var(--soft)}
+.via .ico{width:1.35em;height:1.35em;vertical-align:0}.via .sep{color:var(--dim)}
+.apps{display:inline-flex;gap:6px;margin-left:8px;vertical-align:-.12em}.apps .ico{width:.95em;height:.95em;vertical-align:0}
+.fi .n .apps{margin-left:8px;gap:5px}.fi .n .apps .ico{width:15px;height:15px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-wa" viewBox="0 0 24 24"><path fill="#25D366" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol><symbol id="i-tg" viewBox="0 0 24 24"><path fill="#29A9EB" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></symbol></svg>
 
 
 <nav class="tabs" aria-label="Sections"><a href="#top" id="tab-home" aria-current="true">Vision</a><a href="#features" id="tab-feat">Features</a></nav>
 <div class="atmosphere" aria-hidden="true"><canvas id="smoke"></canvas></div>
 <div class="stage" id="top"><div class="pin">
-  <section class="hero"><h1 class="type" id="type" aria-label="Delegate the rest"><span class="u">delegate</span> the rest</h1></section>
+  <section class="hero"><div class="hero-in"><h1 class="type" id="type" aria-label="Delegate the rest"><span class="u">delegate</span> the rest</h1><p class="via"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp</span><span class="sep">·</span><svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg><span>Telegram</span></p></div></section>
   <section class="letter" id="letter">
     <main>
       <span class="l">Your life is not one app.</span>
@@ -139,6 +160,7 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
         <label for="wl-email">Join the waitlist</label>
         <div class="row"><input id="wl-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" required><button id="wl-btn" type="submit">Join</button></div>
         <div class="msg" id="wl-msg" role="status"></div>
+        <div class="iv" id="wl-iv" hidden aria-live="polite"></div>
       </form>
 
       <div class="sign" aria-label="Vision">
@@ -153,7 +175,7 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 <section class="feat" id="features" aria-labelledby="feat-h">
   <h2 id="feat-h">Features</h2>
   <div class="about">
-    <p class="one">A personal AI assistant that lives in your chat apps.</p>
+    <p class="one">A personal AI assistant that lives in your chat apps.<span class="apps" role="img" aria-label="WhatsApp and Telegram"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg><svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg></span></p>
     <p class="big">Vision sits in WhatsApp and Telegram and takes the busywork off your plate: it triages your email, runs your calendar, ships code and makes sure reminders actually ring. It remembers every conversation, so you never repeat yourself. And it never sends, posts or books anything outward until you say OK.</p>
   </div>
   <p class="lede">Everything Vision does today, what we're building, and what's next. Essential is in every Vision; add the other two as you need them.</p>
@@ -221,16 +243,74 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 
 <script>
 (function(){
-  var ENDPOINT='https://arnavs-mac-mini.tail43dee0.ts.net:8443/api/waitlist';
-  var f=document.getElementById('wl'),m=document.getElementById('wl-msg'),b=document.getElementById('wl-btn'),e=document.getElementById('wl-email');
+  var BASE='https://arnavs-mac-mini.tail43dee0.ts.net:8443/api/waitlist';
+  var f=document.getElementById('wl'),m=document.getElementById('wl-msg'),b=document.getElementById('wl-btn'),e=document.getElementById('wl-email'),iv=document.getElementById('wl-iv');
+  var row=f.querySelector('.row'),lab=f.querySelector('label');
+  var S={email:'',token:'',cfg:null,i:0,ans:{}};
+  // Everything user- or server-provided goes in via textContent, never innerHTML.
+  function el(t,c,txt){var n=document.createElement(t);if(c)n.className=c;if(txt!=null)n.textContent=txt;return n}
+  function post(path,body){return fetch(BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok)throw j;return j})})}
+  function money(n){return '$'+(Math.round(n)===n?n:n.toFixed(2))}
+  function answered(q){var a=S.ans[q.id];return q.type==='multi'?(a&&a.length>0):!!a}
+  function render(){
+    var c=S.cfg,qs=c.questions,q=qs[S.i];iv.textContent='';
+    if(S.i===0&&c.intro)iv.appendChild(el('div','h',c.intro));
+    iv.appendChild(el('div','st','Question '+(S.i+1)+' of '+qs.length));
+    var bar=el('div','bar'),fill=el('i');fill.style.width=((S.i)/qs.length*100)+'%';bar.appendChild(fill);iv.appendChild(bar);
+    var qt=el('div','q',q.text);qt.id='iv-q';iv.appendChild(qt);
+    if(q.hint)iv.appendChild(el('div','h',q.hint));
+    var txt=null;
+    if(q.type==='text'){
+      txt=el('input');txt.type='text';txt.maxLength=200;txt.setAttribute('aria-labelledby','iv-q');txt.value=S.ans[q.id]||'';
+      txt.addEventListener('input',function(){S.ans[q.id]=txt.value;nx.disabled=!txt.value.trim()});iv.appendChild(txt);
+    }else{
+      var box=el('div','opts');box.setAttribute('role','group');box.setAttribute('aria-labelledby','iv-q');
+      q.options.forEach(function(o){
+        var btn=el('button',null,o.label);btn.type='button';
+        var sel=q.type==='multi'?(S.ans[q.id]||[]).indexOf(o.id)>=0:S.ans[q.id]===o.id;
+        btn.setAttribute('aria-pressed',sel?'true':'false');
+        btn.addEventListener('click',function(){
+          if(q.type==='multi'){var a=(S.ans[q.id]||[]).slice(),k=a.indexOf(o.id);if(k>=0)a.splice(k,1);else a.push(o.id);S.ans[q.id]=a;render();}
+          else{S.ans[q.id]=o.id;if(o.text)render();else next();}
+        });
+        box.appendChild(btn);
+      });
+      iv.appendChild(box);
+      var ot=q.options.filter(function(o){return o.text&&[].concat(S.ans[q.id]||[]).indexOf(o.id)>=0})[0];
+      if(ot){txt=el('input');txt.type='text';txt.maxLength=200;txt.placeholder='Tell us (optional)';txt.setAttribute('aria-label',ot.label);txt.value=S.ans[q.id+':text']||'';
+        txt.addEventListener('input',function(){S.ans[q.id+':text']=txt.value});iv.appendChild(txt);}
+    }
+    var nav=el('div','nav'),bk=el('button','back','\u2190 Back');bk.type='button';bk.style.visibility=S.i?'visible':'hidden';
+    bk.addEventListener('click',function(){S.i--;render()});
+    var nx=el('button',null,S.i===qs.length-1?'See my price':'Next');nx.type='button';nx.disabled=!answered(q)||(q.type==='text'&&!String(S.ans[q.id]||'').trim());
+    nx.addEventListener('click',next);nav.appendChild(bk);nav.appendChild(nx);iv.appendChild(nav);
+    if(txt)txt.focus();
+  }
+  function next(){
+    var qs=S.cfg.questions;if(!answered(qs[S.i]))return;
+    if(S.i<qs.length-1){S.i++;render();return}
+    iv.textContent='';iv.appendChild(el('div','h','Working out your price...'));
+    post('/interview',{email:S.email,token:S.token,answers:S.ans}).then(function(r){
+      var q=r.quote;iv.textContent='';
+      iv.appendChild(el('div','q',S.cfg.thanks||"Thanks! You're on the list."));
+      var p=el('div','price',money(q.monthly));p.appendChild(el('small',null,' / month'));iv.appendChild(p);
+      iv.appendChild(el('div','h','or '+money(q.yearly)+' / year'));
+      if(q.powerTierCandidate)iv.appendChild(el('div','h','You might be a fit for our Power tier ('+money(q.powerTierMonthly)+'/mo, custom features built for you). We will reach out.'));
+      iv.appendChild(el('div','fine','This is a quote, not a charge. Nothing is billed now; you will hear from us before Vision launches.'));
+    }).catch(function(){iv.textContent='';iv.appendChild(el('div','h',"You're on the list. We couldn't save your answers just now."));
+      var r=el('button',null,'Try again');r.type='button';r.addEventListener('click',function(){S.i=S.cfg.questions.length-1;next()});iv.appendChild(r);});
+  }
   f.addEventListener('submit',function(ev){
     ev.preventDefault();
     var v=e.value.trim();
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.textContent='Enter a valid email.';return}
-        b.disabled=true;m.textContent='Adding you...';
-    fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v})})
-      .then(function(r){if(!r.ok)throw 0;m.textContent="You're on the list.";e.value='';})
-      .catch(function(){m.textContent='Something went wrong. Try again.';b.disabled=false;});
+    b.disabled=true;m.textContent='Adding you...';
+    post('',{email:v}).then(function(r){
+      m.textContent="You're on the list.";e.value='';
+      if(!r.interview||!r.token||!(r.interview.questions||[]).length)return;
+      S.email=v.toLowerCase();S.token=r.token;S.cfg=r.interview;S.i=0;S.ans={};
+      row.hidden=true;lab.textContent="You're on the list";m.textContent='';iv.hidden=false;render();
+    }).catch(function(){m.textContent='Something went wrong. Try again.';b.disabled=false;});
   });
 })();
 </script>
@@ -240,6 +320,8 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
   var LABEL={live:'Live',building:'Building',planned:'Planned'},ORDER=['live','building','planned'];
   var countsEl=document.getElementById('feat-counts'),list=document.getElementById('feat-list'),filter=null,all=[],CATS=[];
   function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  var WA='<svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg>',TG='<svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg>';
+  function apps(f){var t=f.id+' '+f.name+' '+(f.description||''),m=f.area==='Messaging'||/whatsapp|telegram/i.test(f.id+f.name);if(!m)return '';var w=/whatsapp/i.test(t),g=/telegram/i.test(t);if(!w&&!g)return '';return '<span class="apps" role="img" aria-label="'+[w&&'WhatsApp',g&&'Telegram'].filter(Boolean).join(' and ')+'">'+(w?WA:'')+(g?TG:'')+'</span>'}
   function render(){
     var c={live:0,building:0,planned:0};all.forEach(function(f){c[f.status]++});
     var h='<button type="button" data-s="" aria-pressed="'+(!filter)+'"><b>'+all.length+'</b> All</button>';
@@ -253,7 +335,7 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
       return '<div class="grp" id="grp-'+esc(g.id)+'"><div class="grp-h"><h3>'+esc(g.name)+'</h3><span class="pill'+(g.essential?' inc':'')+'">'+(g.essential?'Included':'Choose to add')+'</span><span class="ct">'+cnt+'</span></div>'+
         (g.tagline?'<p class="tag">'+esc(g.tagline)+'</p>':'')+'<div class="rows">'+
         (items.map(function(f){
-          return '<div class="fi"><span class="n">'+esc(f.name)+(f.area?'<span class="a">'+esc(f.area)+'</span>':'')+'</span><span class="badge s-'+f.status+'"><i></i>'+LABEL[f.status]+'</span><span class="d">'+esc(f.description||'')+'</span></div>'}).join('')||'<p class="empty">Nothing '+(filter?LABEL[filter].toLowerCase()+' ':'')+'here yet.</p>')+'</div></div>'
+          return '<div class="fi"><span class="n">'+esc(f.name)+apps(f)+(f.area?'<span class="a">'+esc(f.area)+'</span>':'')+'</span><span class="badge s-'+f.status+'"><i></i>'+LABEL[f.status]+'</span><span class="d">'+esc(f.description||'')+'</span></div>'}).join('')||'<p class="empty">Nothing '+(filter?LABEL[filter].toLowerCase()+' ':'')+'here yet.</p>')+'</div></div>'
     }).join('');
   }
   countsEl.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;filter=b.getAttribute('data-s')||null;render()});
