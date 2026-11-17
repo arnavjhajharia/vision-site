@@ -194,6 +194,8 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
       <form class="wl" id="wl" novalidate>
         <label for="wl-email">Join the waitlist</label>
         <div class="row"><input id="wl-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" required><button id="wl-btn" type="submit">Join</button></div>
+        <input id="wl-ref" type="text" name="ref_visible" maxlength="32" placeholder="Who invited you? (ambassador name or code, optional)" aria-label="Who invited you? (ambassador name or code, optional)" autocomplete="off">
+        <input type="hidden" id="wl-ref-h" name="ref">
         <div class="msg" id="wl-msg" role="status"></div>
         <div class="iv" id="wl-iv" hidden aria-live="polite"></div>
       </form>
@@ -295,6 +297,15 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
   var VI=window.VisionInterview,DRAFT='vision-wl-draft';
   var f=document.getElementById('wl'),m=document.getElementById('wl-msg'),b=document.getElementById('wl-btn'),e=document.getElementById('wl-email'),iv=document.getElementById('wl-iv');
   var row=f.querySelector('.row'),lab=f.querySelector('label');
+  // Ambassador referral: ?ref=<code> is kept in localStorage so it survives the interview and a later visit. The
+  // visible field is prefilled from it; whatever is in the field at submit is what gets sent (and remembered).
+  var REF='vision-wl-ref',refIn=document.getElementById('wl-ref'),refH=document.getElementById('wl-ref-h');
+  function getRef(){try{return localStorage.getItem(REF)||''}catch(_){return ''}}
+  function setRef(v){try{if(v)localStorage.setItem(REF,v)}catch(_){}}
+  var urlRef=VI.normalizeRef(new URLSearchParams(location.search).get('ref'));
+  if(urlRef)setRef(urlRef);
+  var refNow=urlRef||VI.normalizeRef(getRef());
+  refIn.value=refNow;refH.value=refNow;
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var hover=window.matchMedia&&matchMedia('(hover: hover)').matches;
   var S={email:'',token:'',cfg:null,qs:[],i:0,ans:{},notes:{},reacts:{},typed:{},busy:false,ended:false,status:'new'};
@@ -476,8 +487,9 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
     if(!iv.hidden)return;
     var v=e.value.trim();
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.textContent='Enter a valid email.';return}
+    var ref=VI.normalizeRef(refIn.value);refH.value=ref;setRef(ref);
     b.disabled=true;m.textContent='Adding you...';
-    post('',{email:v}).then(function(r){
+    post('',{email:v,ref:ref}).then(function(r){
       m.textContent="You're on the list.";e.value='';
       if(r.status==='done'){S.cfg={chat:r.chat||{}};m.textContent=C('alreadyDone',"You're already on the list.");return}
       if(!r.interview||!r.token||!(r.interview.questions||[]).length)return;
