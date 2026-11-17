@@ -41,3 +41,16 @@ reactions, branches, chip labels, free-text matching) lives in personal-agent `d
 page fetches it at signup, so editing that file changes the chat without touching this repo. `interview-core.js` is
 the pure logic (branch picking, typed-answer matching, reactions); `node --test tests/` runs its tests (uses the real
 config when personal-agent is checked out next to this repo).
+
+## Ambassador referrals
+
+Ambassador links look like `https://arnavjhajharia.github.io/vision-site/?ref=manya`. The page keeps the code in
+localStorage (`vision-wl-ref`), prefills the optional "Who invited you?" field and sends it with the signup. The server
+stores it on the waitlist record (first referral wins). Codes are listed in `ambassadors.json` (code -> name).
+
+```sh
+node scripts/ambassador-report.mjs          # signups and interviews per ambassador (reads ../personal-agent/data/waitlist.jsonl)
+node --test tests/                          # includes the referral tests
+```
+
+Commission is not in code: an ambassador earns one month of what each referred client actually pays.
