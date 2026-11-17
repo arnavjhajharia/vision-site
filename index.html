@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0a">
-<meta name="description" content="Vision is an AI agent that lives in your WhatsApp and drives the coding agents you already use.">
+<meta name="description" content="Vision is a personal AI that lives in your WhatsApp and Telegram. It handles your email, code and life, and acts only when you say yes.">
 <title>Vision</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400&family=Geist+Mono:wght@400&display=swap">
 <style>
@@ -28,11 +28,9 @@ html{scrollbar-width:none}html::-webkit-scrollbar{display:none}
 .atmosphere{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;background:var(--bg)}
 .atmosphere canvas{display:block;width:100%;height:100%}
 
-.stage{position:relative;z-index:1}
-.spacer{height:var(--D)}
-.pin{position:sticky;top:0;min-height:100svh;min-height:100vh}
-
-.hero{position:absolute;top:0;left:0;right:0;height:100svh;display:grid;place-items:center}
+.home{position:relative;z-index:1;max-width:1080px;margin:0 auto}
+.hero{min-height:100svh;display:grid;gap:clamp(32px,5vw,56px);align-content:center;justify-items:center;padding:clamp(72px,12vh,112px) 0 clamp(40px,8vh,72px)}
+@media (min-width:900px){.hero{grid-template-columns:minmax(0,1fr) minmax(320px,372px);justify-items:stretch;align-items:center}.hero .hero-in{align-items:flex-start;text-align:left}.hero .demo{margin:0}}
 .type{font-family:var(--pixel);font-weight:500;font-size:clamp(22px,4vw,62px);line-height:1.2;white-space:nowrap;font-kerning:none}
 .type .u{position:relative;display:inline-block}
 .type .u::after{content:"";position:absolute;left:0;right:0;bottom:-.12em;height:.075em;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
@@ -40,30 +38,54 @@ html{scrollbar-width:none}html::-webkit-scrollbar{display:none}
 .caret{display:inline-block;width:.5em;height:.86em;background:var(--ink);vertical-align:-.08em;margin:0 .04em;animation:blink 1.05s steps(1) infinite}
 @keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
 
-.letter{min-height:100svh;display:grid;grid-template-rows:1fr auto;justify-items:center}
-main{align-self:center;width:100%;max-width:64ch;font-family:var(--pixel);padding:clamp(28px,5vw,56px) 0;font-size:var(--t);line-height:var(--lh)}
-.l{display:block;font-family:var(--pixel);font-weight:500;text-wrap:pretty;overflow-wrap:break-word}
-.l.dim{color:var(--dim)}
+.sub-h{margin-top:clamp(18px,2.4vw,28px);max-width:40ch;color:var(--soft);font-size:clamp(16px,1.5vw,19px);line-height:1.55}
+.ctas{margin-top:24px;display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 18px;border-radius:2px;font:400 13px var(--mono);letter-spacing:.04em;text-decoration:none;border:1px solid var(--glow);color:var(--ink)}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:#000}
+.btn.pri:hover,.btn.pri:focus-visible{background:var(--glow);border-color:var(--glow);color:#fff}
+.btn.sec:hover,.btn.sec:focus-visible{background:var(--glow);color:#fff}
+.blk{padding:clamp(56px,10vh,96px) 0 0;max-width:880px;margin:0 auto;scroll-margin-top:24px}
+.blk h2{font-family:var(--pixel);font-weight:500;font-size:clamp(26px,3.4vw,44px);line-height:1.15}
+.blk .kick{margin-top:10px;font-family:var(--pixel);font-weight:500;font-size:clamp(17px,2vw,22px);line-height:1.35;color:var(--soft);max-width:48ch;text-wrap:pretty}
+.cards{margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.card{padding:18px 20px;border:1px solid var(--rule);border-radius:2px}
+.card h3,.steps h3{font-family:var(--pixel);font-weight:500;font-size:17px;line-height:1.35}
+.card p,.steps p,.facts li{margin-top:8px;color:var(--soft);font-size:15px;line-height:1.6}
+.steps{margin-top:28px;list-style:none;border-top:1px solid var(--rule)}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.steps .sn{font:400 12px var(--mono);letter-spacing:.06em;color:var(--glow);padding-top:4px}
+.steps p{max-width:60ch}
+.facts{margin-top:24px;list-style:none;border-left:2px solid var(--glow);padding:4px 0 4px 20px;max-width:68ch}
+.facts li{margin-top:14px}.facts li:first-child{margin-top:0}
+.facts b{font-weight:400;color:var(--ink)}
+.blk .more{display:inline-flex;align-items:center;min-height:44px;margin-top:14px;font:400 13px var(--mono);letter-spacing:.04em;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+.blk .more:hover,.blk .more:focus-visible{border-color:var(--glow)}
+#waitlist{font-size:var(--t);line-height:var(--lh);padding-bottom:clamp(48px,8vh,80px)}
+#waitlist .kick{font-size:clamp(15px,1.6vw,18px)}
+.home footer{margin-top:0}
+footer a.r{text-decoration:none;font-size:12px;letter-spacing:.02em;display:inline-flex;align-items:center;min-height:44px}
+footer a.r:hover{color:var(--ink)}
 .sign{margin-top:calc(var(--lh)*1em*.42);display:flex;align-items:center;gap:.35em;width:max-content;font-family:var(--sans)}
 .sign svg{width:1.5em;height:1.5em;overflow:visible;flex:none}
 .sign circle{fill:none;stroke:var(--glow);stroke-width:5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
 .sign .dot{fill:var(--glow);stroke:none;opacity:0}
 .sign .word{display:inline-flex;font-weight:400;font-size:1.55em;line-height:1;letter-spacing:-.035em}
 .sign .ch{display:inline-block;opacity:0;transform:translateX(-.35em);filter:blur(5px)}
-.letter.in .sign circle{animation:draw 1.8s var(--ease) .3s forwards}
-.letter.in .sign .dot{animation:fade .6s var(--ease) 1.6s forwards}
-.letter.in .sign .ch{animation:letter 1s var(--ease) forwards;animation-delay:calc(1.5s + var(--k)*.11s)}
+.in .sign circle{animation:draw 1.8s var(--ease) .3s forwards}
+.in .sign .dot{animation:fade .6s var(--ease) 1.6s forwards}
+.in .sign .ch{animation:letter 1s var(--ease) forwards;animation-delay:calc(1.5s + var(--k)*.11s)}
+html:not(.js) .sign circle{stroke-dashoffset:0}html:not(.js) .sign .dot,html:not(.js) .sign .ch{opacity:1;transform:none;filter:none}
 @keyframes draw{to{stroke-dashoffset:0}}@keyframes fade{to{opacity:1}}@keyframes letter{to{opacity:1;transform:none;filter:none}}
 
 footer{height:clamp(52px,8vh,68px);display:flex;align-items:center;justify-content:space-between;width:100%;border-top:1px solid var(--rule)}
 footer span{font-size:12px;letter-spacing:.02em;font-weight:400;color:rgba(255,255,255,.38)}
 footer .r{color:var(--dim)}
 
-.js .hero{will-change:opacity}
-.js .letter{opacity:0;transform:translate3d(0,14px,0);will-change:opacity,transform}
-html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:not(.js) .spacer{display:none}
-@media (max-width:820px){.type{font-size:6.6vw}:root{--t:18px}main{padding:28px 0}}
-@media (prefers-reduced-motion:reduce){.caret{animation:none}.sign circle{stroke-dashoffset:0}.sign .dot,.sign .ch{opacity:1;transform:none;filter:none}.letter.in *{animation:none!important}}
+.js.io .rv{opacity:0;transform:translate3d(0,14px,0);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.js.io .rv.in{opacity:1;transform:none}
+@media (max-width:820px){.type{font-size:max(22px,7.6vw)}:root{--t:18px}}
+@media (max-width:899px){.hero{text-align:center}.hero .hero-in .ctas{justify-content:center}.sub-h{margin-inline:auto}}
+@media (prefers-reduced-motion:reduce){.caret{animation:none}.sign circle{stroke-dashoffset:0}.sign .dot,.sign .ch{opacity:1;transform:none;filter:none}.in .sign *{animation:none!important}.js.io .rv{opacity:1;transform:none;transition:none}}
 
 .wl{margin-top:calc(var(--lh)*1em*.8);display:flex;flex-direction:column;gap:10px;max-width:420px}
 .wl label{font-family:var(--pixel);font-size:.8em;color:var(--dim)}
@@ -167,6 +189,7 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 .apps{display:inline-flex;gap:6px;margin-left:8px;vertical-align:-.12em}.apps .ico{width:.95em;height:.95em;vertical-align:0}
 .fi .n .apps{margin-left:8px;gap:5px}.fi .n .apps .ico{width:15px;height:15px}
 </style>
+<link rel="stylesheet" href="demo.css">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-wa" viewBox="0 0 24 24"><path fill="#25D366" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol><symbol id="i-tg" viewBox="0 0 24 24"><path fill="#29A9EB" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></symbol></svg>
@@ -174,24 +197,61 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 
 <nav class="tabs" aria-label="Sections"><a href="#top" id="tab-home" aria-current="true">Vision</a><a href="#features" id="tab-feat">Features</a></nav>
 <div class="atmosphere" aria-hidden="true"><canvas id="smoke"></canvas></div>
-<div class="stage" id="top"><div class="pin">
-  <section class="hero"><div class="hero-in"><h1 class="type" id="type" aria-label="Delegate the rest"><span class="u">delegate</span> the rest</h1><p class="via"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp</span><span class="sep">·</span><svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg><span>Telegram</span></p></div></section>
-  <section class="letter" id="letter">
-    <main>
-      <span class="l">Your life is not one app.</span>
-      <span class="l">It is a thousand threads across chats, inboxes, repos and calendars.</span>
-      <span class="l">Every assistant so far has asked you to come to it.</span>
-      <span class="l">Vision goes where you already are.</span>
-      <span class="l">It lives in your WhatsApp, on a number of its own.</span>
-      <span class="l">It remembers what you tell it, and keeps private what you never meant to share.</span>
-      <span class="l">It drives the coding agents you already use: Claude Code, Codex, Cursor.</span>
-      <span class="l">It plans the work, splits it up, opens the pull request, and waits for your yes.</span>
-      <span class="l">Nothing leaves your hands without your approval.</span>
-      <span class="l">One agent, on your Mac, your phone and your wrist.</span>
-      <span class="l">Intelligence should work for you, on your terms.</span>
-      <span class="l">$1 to $20 a month, or $100/month for custom features.</span>
-      <span class="l dim">More soon.</span>
-      <form class="wl" id="wl" novalidate>
+<div class="home" id="top">
+  <section class="hero" aria-labelledby="type">
+    <div class="hero-in">
+      <h1 class="type" id="type" aria-label="Delegate the rest"><span class="u">delegate</span> the rest</h1>
+      <p class="via"><svg class="ico" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp</span><span class="sep">·</span><svg class="ico" aria-hidden="true"><use href="#i-tg"/></svg><span>Telegram</span></p>
+      <p class="sub-h">A personal AI that lives in your chats. It handles your email, code and life, and acts only when you say yes.</p>
+      <div class="ctas"><a class="btn pri" href="#waitlist">Join the waitlist</a><a class="btn sec" href="#how">How it works <span aria-hidden="true">&darr;</span></a></div>
+    </div>
+    <div class="demo" id="vision-demo" aria-label="Vision demo: a chat with Vision"></div>
+  </section>
+
+  <section class="blk rv" id="who" aria-labelledby="who-h">
+    <h2 id="who-h">Who it&rsquo;s for</h2>
+    <p class="kick">People with a thousand threads across chats, inboxes, repos and calendars.</p>
+    <div class="cards">
+      <div class="card"><h3>Founders</h3><p>Drowning in inbox and repos. Vision triages the mail, drafts the replies and keeps the code moving.</p></div>
+      <div class="card"><h3>Builders</h3><p>Already on Claude Code, Codex or Cursor. Vision plans the work, runs the agents in parallel and opens the PR.</p></div>
+      <div class="card"><h3>Busy people</h3><p>Who need reminders that actually ring. Vision nags until you acknowledge, then stops.</p></div>
+      <div class="card"><h3>Anyone tired of apps</h3><p>An assistant without another app to install. It is a contact in the chat you already have open.</p></div>
+    </div>
+  </section>
+
+  <section class="blk rv" id="how" aria-labelledby="how-h">
+    <h2 id="how-h">How it works</h2>
+    <p class="kick">Every assistant so far asked you to come to it. Vision goes where you already are.</p>
+    <ol class="steps">
+      <li><span class="sn">01</span><div><h3>It lives in your chats</h3><p>Vision has its own number on WhatsApp and Telegram. Message it like a person, from your Mac, your phone or your wrist.</p></div></li>
+      <li><span class="sn">02</span><div><h3>It remembers</h3><p>Every conversation is kept, so you never repeat yourself. Context from last week shapes the answer today.</p></div></li>
+      <li><span class="sn">03</span><div><h3>It acts only with your yes</h3><p>Drafts, plans and pull requests wait for your approval. Ask for a feature and Vision plans it, splits it across parallel coding agents, opens the PR and asks before it merges.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="blk rv" id="trust" aria-labelledby="trust-h">
+    <h2 id="trust-h">Trust &amp; privacy</h2>
+    <ul class="facts">
+      <li><b>Nothing goes out without your OK.</b> Sends, posts, merges and bookings all wait for an explicit yes.</li>
+      <li><b>Quiet in groups.</b> In a group chat Vision speaks only when tagged, and never leaks your private context to the room.</li>
+      <li><b>Your memory is yours.</b> What Vision remembers about you is used to help you, not shared with anyone else.</li>
+    </ul>
+  </section>
+
+  <section class="blk rv" id="plans" aria-labelledby="plans-h">
+    <h2 id="plans-h">Pricing</h2>
+    <p class="kick">$1 to $20 a month, or $100/month for custom features.</p>
+    <div class="tiers">
+      <div class="tier"><div class="tn">Vision</div><div class="tp">$1&ndash;$20<small> / month</small></div><p>Priced by how you use it. Essential is included; add Productivity and Builder as you need them.</p></div>
+      <div class="tier top"><div class="tn">Custom</div><div class="tp">$100<small> / month</small></div><p>Everything in Vision, plus bespoke features built for you. Describe the feature and Vision builds it.</p></div>
+    </div>
+    <a class="more" href="#features">See every feature <span aria-hidden="true">&rarr;</span></a>
+  </section>
+
+  <section class="blk rv" id="waitlist" aria-labelledby="wl-h">
+    <h2 id="wl-h">Get Vision early</h2>
+    <p class="kick">Join the list, then tell Vision what you need in a short chat. It quotes your price on the spot.</p>
+    <form class="wl" id="wl" novalidate>
         <label for="wl-email">Join the waitlist</label>
         <div class="row"><input id="wl-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" required><button id="wl-btn" type="submit">Join</button></div>
         <div class="msg" id="wl-msg" role="status"></div>
@@ -202,10 +262,9 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
         <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" pathLength="1"/><circle class="dot" cx="20" cy="20" r="6"/></svg>
         <span class="word" aria-hidden="true"><span class="ch" style="--k:0">V</span><span class="ch" style="--k:1">i</span><span class="ch" style="--k:2">s</span><span class="ch" style="--k:3">i</span><span class="ch" style="--k:4">o</span><span class="ch" style="--k:5">n</span></span>
       </div>
-    </main>
-    <footer><span>Vision</span><span class="r">Early access soon</span></footer>
   </section>
-</div><div class="spacer" aria-hidden="true"></div></div>
+  <footer><span>Vision &middot; delegate the rest</span><a class="r" href="#features">See every feature &rarr;</a></footer>
+</div>
 
 <section class="feat" id="features" aria-labelledby="feat-h">
   <h2 id="feat-h">Features</h2>
@@ -239,9 +298,10 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* typed opening line */
-  var type=document.getElementById('type'), u=type.querySelector('.u');
+  var type=document.getElementById('type'), u=type&&type.querySelector('.u');
   var full=['delegate',' the rest'];
-  if(!reduce){
+  if(!u){}
+  else if(!reduce){
     u.textContent='';type.lastChild.textContent='';
     var caret=document.createElement('span');caret.className='caret';type.appendChild(caret);
     var i=0,j=0,phase=0;
@@ -252,21 +312,16 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
     setTimeout(function(){u.classList.add('on')},1200);
   } else { u.classList.add('on'); }
 
-  /* scroll handoff: hero fades out, letter fades in */
-  var hero=document.querySelector('.hero'),letter=document.getElementById('letter'),spacer=document.querySelector('.spacer');
-  function upd(){
-    var D=spacer.offsetHeight||400, p=Math.min(1,Math.max(0,(window.scrollY||0)/D));
-    hero.style.opacity=String(1-Math.min(1,p*1.6));
-    var o=Math.min(1,Math.max(0,(p-.35)/.65));
-    letter.style.opacity=String(o);
-    letter.style.transform='translate3d(0,'+(14*(1-o))+'px,0)';
-    if(o>.6)letter.classList.add('in');
-    letter.style.pointerEvents=o<.2?'none':'auto';
-  }
-  addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+  /* sections fade in as they scroll into view (skipped for reduced motion / old browsers) */
+  var rv=[].slice.call(document.querySelectorAll('.rv'));
+  if(!reduce&&'IntersectionObserver' in window){
+    root.classList.add('io');
+    var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{rootMargin:'0px 0px -12% 0px',threshold:.08});
+    rv.forEach(function(n){io.observe(n)});
+  } else rv.forEach(function(n){n.classList.add('in')});
 
   /* low-contrast smoke */
-  var cv=document.getElementById('smoke'),ctx=cv.getContext('2d'),W,H,blobs=[];
+  var cv=document.getElementById('smoke');if(!cv||!cv.getContext)return;var ctx=cv.getContext('2d'),W,H,blobs=[];
   function size(){var d=Math.min(devicePixelRatio||1,1.5);W=cv.width=Math.floor(innerWidth*d/2);H=cv.height=Math.floor(innerHeight*d/2)}
   size();addEventListener('resize',size);
   for(var k=0;k<7;k++)blobs.push({x:Math.random(),y:Math.random(),r:.25+Math.random()*.35,a:Math.random()*6.28,s:.00008+Math.random()*.00014,h:k%3===0?228:(k%3===1?250:215)});
@@ -524,5 +579,6 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
   th.addEventListener('click',function(e){e.preventDefault();scrollTo({top:0,behavior:'smooth'});history.replaceState(null,'',location.pathname)});
 })();
 </script>
+<script src="demo.js" defer></script>
 </body>
 </html>
