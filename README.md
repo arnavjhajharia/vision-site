@@ -41,3 +41,43 @@ reactions, branches, chip labels, free-text matching) lives in personal-agent `d
 page fetches it at signup, so editing that file changes the chat without touching this repo. `interview-core.js` is
 the pure logic (branch picking, typed-answer matching, reactions); `node --test tests/` runs its tests (uses the real
 config when personal-agent is checked out next to this repo).
+
+## Ambassador referrals
+
+Ambassador links look like `https://arnavjhajharia.github.io/vision-site/?ref=manya`. The page keeps the code in
+localStorage (`vision-wl-ref`), prefills the optional "Who invited you?" field and sends it with the signup. The server
+stores it on the waitlist record (first referral wins). Codes are listed in `ambassadors.json` (code -> name).
+
+```sh
+node scripts/ambassador-report.mjs          # signups and interviews per ambassador (reads ../personal-agent/data/waitlist.jsonl)
+node --test tests/                          # includes the referral tests
+```
+
+## Ambassador dashboard
+
+The local dashboard reads the same waitlist JSONL file as `ambassador-report.mjs`. Start it with an admin token:
+
+```sh
+ADMIN_TOKEN=choose-a-local-secret node scripts/ambassador-server.mjs
+# Open http://127.0.0.1:8787/ambassadors.html
+# Admin view: http://127.0.0.1:8787/ambassador-admin.html
+```
+
+`WAITLIST_FILE` can point to a different waitlist file. Billing overrides default to
+`../personal-agent/data/ambassador-billing.json` and use email keys, for example:
+
+```json
+{
+  "client@example.com": { "status": "paying", "price": 12, "since": "2026-11-01" },
+  "free@example.com": { "status": "free", "price": 0, "since": "2026-11-01" }
+}
+```
+
+Claims are saved to the ignored local file `data/ambassador-claims.json` by default. Set
+`AMBASSADOR_BILLING_FILE` or `AMBASSADOR_CLAIMS_FILE` to override either path. An ambassador earns
+one month of the amount each referred client actually pays; free or unpaid clients earn $0. Each
+signup's commission can appear in only one non-rejected claim. Rejected claims release those signup
+months so they can be claimed again. Admin actions require the `ADMIN_TOKEN` used to start the server.
+
+This Node server is a local stand-in until equivalent endpoints are added to the personal-agent
+server; connecting or deploying those endpoints needs Arnav's OK.

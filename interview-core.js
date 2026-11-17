@@ -93,6 +93,12 @@
     return questions.length;
   }
 
-  var api = { fill: fill, variantFor: variantFor, resolve: resolve, matchText: matchText, reaction: reaction, firstOpen: firstOpen, joinAnd: joinAnd };
+  // Ambassador referral code: lowercase letters, digits, '-' or '_', 1-32 chars. Anything else becomes ''.
+  function normalizeRef(s) {
+    s = String(s == null ? '' : s).trim().toLowerCase();
+    return /^[a-z0-9][a-z0-9_-]{0,31}$/.test(s) ? s : '';
+  }
+
+  var api = { fill: fill, variantFor: variantFor, resolve: resolve, matchText: matchText, reaction: reaction, firstOpen: firstOpen, joinAnd: joinAnd, normalizeRef: normalizeRef };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.VisionInterview = api;
 })(typeof window !== 'undefined' ? window : this);
