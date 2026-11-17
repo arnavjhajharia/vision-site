@@ -165,15 +165,14 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 
 <script>
 (function(){
-  var FORM_ID='';  /* Formspree form id, e.g. xabcdefg */
+  var ENDPOINT='https://arnavs-mac-mini.tail43dee0.ts.net:8443/api/waitlist';
   var f=document.getElementById('wl'),m=document.getElementById('wl-msg'),b=document.getElementById('wl-btn'),e=document.getElementById('wl-email');
   f.addEventListener('submit',function(ev){
     ev.preventDefault();
     var v=e.value.trim();
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.textContent='Enter a valid email.';return}
-    if(!FORM_ID){m.textContent='Waitlist opens very soon.';return}
-    b.disabled=true;m.textContent='Adding you...';
-    fetch('https://formspree.io/f/'+FORM_ID,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:v})})
+        b.disabled=true;m.textContent='Adding you...';
+    fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:v})})
       .then(function(r){if(!r.ok)throw 0;m.textContent="You're on the list.";e.value='';})
       .catch(function(){m.textContent='Something went wrong. Try again.';b.disabled=false;});
   });
