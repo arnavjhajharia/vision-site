@@ -126,7 +126,19 @@
   <script>
     (() => {
       const params = new URLSearchParams(window.location.search);
-      const apiBase = (params.get('api') || window.location.origin).replace(/\/+$/, '');
+      let apiBase = window.location.origin;
+      let apiAllowed = true;
+      let apiWarning = '';
+      try {
+        const apiUrl = new URL(params.get('api') || window.location.origin, window.location.href);
+        const localHost = ['localhost', '127.0.0.1', '[::1]'].includes(apiUrl.hostname);
+        apiAllowed = ['http:', 'https:'].includes(apiUrl.protocol) && (apiUrl.origin === window.location.origin || localHost);
+        if (apiAllowed) apiBase = apiUrl.href.replace(/\/+$/, '');
+        else apiWarning = 'Dashboard API must use this site or a local development server.';
+      } catch (_) {
+        apiAllowed = false;
+        apiWarning = 'Dashboard API URL is invalid. Use this site or a local development server.';
+      }
       const codeInput = document.getElementById('code-input');
       const form = document.getElementById('lookup-form');
       const loadButton = document.getElementById('load-button');
@@ -255,6 +267,7 @@
         dashboard.hidden = false;
       }
       async function load(code) {
+        if (!apiAllowed) { setMessage(apiWarning, true); return false; }
         const requestedCode = code.trim();
         if (!requestedCode) { setMessage('Enter your ambassador code to continue.', true); return false; }
         const thisRequest = ++requestId;
@@ -308,13 +321,17 @@
       claimButton.addEventListener('click', async () => {
         if (!currentCode || claimButton.disabled) return;
         const claimCode = currentCode;
+        const signupIds = (currentView && Array.isArray(currentView.signups) ? currentView.signups : [])
+          .filter((signup) => Number(signup.commission) > 0 && !signup.claimStatus)
+          .map((signup) => signup.signupId);
+        if (!signupIds.length) return;
         const thisRequest = ++requestId;
         claimButton.disabled = true;
         setMessage('Submitting your claim…');
         try {
           const response = await fetch(apiBase + '/api/ambassador/claims', {
             method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify({ code: claimCode })
+            body: JSON.stringify({ code: claimCode, signupIds })
           });
           const body = await readResponse(response, 'Your claim could not be submitted. Please try again.');
           if (thisRequest !== requestId) return;
@@ -337,9 +354,10 @@
       if (!initialCode) {
         let sameOriginApi = false;
         try { sameOriginApi = new URL(apiBase, window.location.href).origin === window.location.origin; } catch (_) { /* Invalid API URLs fail on submit. */ }
-        if (sameOriginApi) initialCode = readSavedCode();
+        if (apiAllowed && sameOriginApi) initialCode = readSavedCode();
       }
       codeInput.value = initialCode;
+      if (!apiAllowed) setMessage(apiWarning, true);
       if (initialCode) load(initialCode);
     })();
   </script>
