@@ -73,20 +73,50 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 .wl button{background:var(--ink);color:#000;border:0;font:500 14px var(--sans);padding:12px 18px;border-radius:2px;cursor:pointer}
 .wl button:disabled{opacity:.5;cursor:default}
 .wl .msg{font-family:var(--pixel);font-size:.8em;min-height:1.4em;color:var(--soft)}
-.iv{margin-top:6px;padding:18px;border:1px solid var(--rule);border-left:2px solid var(--glow);border-radius:2px;display:flex;flex-direction:column;gap:12px}
+.iv{margin-top:6px;border:1px solid var(--rule);border-left:2px solid var(--glow);border-radius:2px;display:flex;flex-direction:column;font-family:var(--sans);font-size:15px;line-height:1.45}
 .iv[hidden],.wl .row[hidden]{display:none}
-.iv .st{font:400 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
-.iv .bar{height:2px;background:var(--rule)}.iv .bar i{display:block;height:100%;background:var(--glow);transition:width .3s var(--ease)}
-.iv .q{font-family:var(--pixel);font-weight:500;font-size:17px;line-height:1.35}
-.iv .h{color:var(--soft);font-size:13px}
-.iv .opts{display:flex;flex-wrap:wrap;gap:8px}
-.wl .iv .opts button{background:transparent;color:var(--soft);border:1px solid var(--rule);font:400 14px var(--sans);padding:10px 12px}
-.wl .iv .opts button[aria-pressed="true"]{color:var(--ink);border-color:var(--glow);background:rgba(59,82,255,.14)}
-.iv .nav{display:flex;gap:8px;justify-content:space-between;align-items:center}
-.wl .iv .nav .back{background:transparent;color:var(--dim);padding:10px 0}
-.iv .price{font-family:var(--pixel);font-size:clamp(30px,5vw,44px);line-height:1.1}
-.iv .price small{font-size:.4em;color:var(--soft)}
-.iv .fine{color:var(--dim);font-size:12px;line-height:1.5}
+.iv .top{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--rule)}
+.wl .iv .back{background:transparent;color:var(--soft);font:400 13px var(--sans);padding:6px 8px;margin-left:-6px;border-radius:2px}
+.wl .iv .back[hidden]{display:inline-block;visibility:hidden}
+.iv .who{display:flex;align-items:center;gap:8px;font:400 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-right:auto}
+.iv .who i{width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 8px var(--glow)}
+.iv .dots{display:flex;gap:6px;align-items:center}
+.iv .dots i{width:7px;height:7px;border-radius:50%;border:1px solid var(--dim);transition:background .3s var(--ease),border-color .3s var(--ease)}
+.iv .dots i.on{background:var(--glow);border-color:var(--glow)}
+.iv .dots i.cur{border-color:var(--ink)}
+.iv .log{display:flex;flex-direction:column;gap:8px;padding:14px 12px;max-height:min(58vh,480px);min-height:120px;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth}
+.iv .b{max-width:86%;padding:9px 13px;border-radius:16px;overflow-wrap:anywhere;animation:pop .28s var(--ease) both}
+.iv .b.v{align-self:flex-start;background:rgba(255,255,255,.07);border:1px solid var(--rule);border-bottom-left-radius:4px}
+.iv .b.u{align-self:flex-end;background:var(--glow);color:#fff;border-bottom-right-radius:4px}
+.iv .b.v.q{font-weight:400}
+.iv .b .h{display:block;margin-top:4px;color:var(--soft);font-size:13px}
+.iv .typing{display:inline-flex;gap:4px;align-items:center;padding:12px 14px}
+.iv .typing i{width:6px;height:6px;border-radius:50%;background:var(--soft);animation:blink 1s infinite}
+.iv .typing i:nth-child(2){animation-delay:.15s}.iv .typing i:nth-child(3){animation-delay:.3s}
+.iv .quote{align-self:stretch;max-width:none;display:flex;flex-direction:column;gap:6px;padding:14px 16px}
+.iv .price{font-family:var(--pixel);font-weight:500;font-size:clamp(30px,8vw,42px);line-height:1.1}
+.iv .price small{font-size:.38em;color:var(--soft);font-family:var(--sans)}
+.iv .sub{color:var(--soft);font-size:14px}
+.iv .pow{margin-top:4px;padding:8px 10px;border:1px solid var(--glow);border-radius:4px;background:rgba(59,82,255,.12);font-size:14px}
+.iv .fine{color:var(--dim);font-size:12px;line-height:1.5;margin-top:4px}
+.iv .chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 12px 12px;justify-content:flex-end}
+.iv .chips:empty{display:none}
+.wl .iv .chips button{background:transparent;color:var(--ink);border:1px solid rgba(59,82,255,.7);border-radius:999px;font:400 14px var(--sans);padding:9px 14px;min-height:40px;display:inline-flex;align-items:center;gap:8px}
+.wl .iv .chips button kbd{font:400 11px var(--mono);color:var(--dim)}
+.wl .iv .chips button[aria-pressed="true"]{background:var(--glow);border-color:var(--glow);color:#fff}
+.wl .iv .chips button[aria-pressed="true"] kbd{color:rgba(255,255,255,.75)}
+.wl .iv .chips button.go{background:var(--ink);color:#000;border-color:var(--ink)}
+.wl .iv .chips button:disabled{opacity:.4}
+.wl .iv button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.iv .say{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--rule)}
+.iv .say[hidden]{display:none}
+.wl .iv .say input{flex:1 1 auto;padding:10px 12px;border-radius:999px;font-size:16px}
+.wl .iv .say button{border-radius:999px;padding:10px 16px}
+.iv .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.iv .b{animation:none}.iv .typing i{animation:none;opacity:.6}.iv .log{scroll-behavior:auto}}
+@media (max-width:480px){.iv .b{max-width:92%}.iv .log{max-height:62svh}.wl .iv .chips button kbd{display:none}}
 .tabs{position:fixed;top:0;right:0;z-index:5;display:flex;gap:4px;padding:max(14px,env(safe-area-inset-top,0px)) max(var(--pad),env(safe-area-inset-right,0px)) 0 0}
 .tabs a{font:400 12px var(--mono);letter-spacing:.04em;color:var(--dim);text-decoration:none;padding:6px 10px;border:1px solid transparent;border-radius:2px;background:rgba(10,10,10,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .tabs a:hover{color:var(--ink)}
@@ -241,75 +271,202 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 </script>
 
 
+<script src="interview-core.js"></script>
 <script>
 (function(){
+  // Waitlist signup + chat interview with Vision. All copy, reactions and branches come from the server config
+  // (personal-agent data/waitlist-interview.json). Everything user- or server-provided goes in via textContent, never innerHTML.
   var BASE='https://arnavs-mac-mini.tail43dee0.ts.net:8443/api/waitlist';
+  var VI=window.VisionInterview,DRAFT='vision-wl-draft';
   var f=document.getElementById('wl'),m=document.getElementById('wl-msg'),b=document.getElementById('wl-btn'),e=document.getElementById('wl-email'),iv=document.getElementById('wl-iv');
   var row=f.querySelector('.row'),lab=f.querySelector('label');
-  var S={email:'',token:'',cfg:null,i:0,ans:{}};
-  // Everything user- or server-provided goes in via textContent, never innerHTML.
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover=window.matchMedia&&matchMedia('(hover: hover)').matches;
+  var S={email:'',token:'',cfg:null,qs:[],i:0,ans:{},notes:{},reacts:{},typed:{},busy:false,ended:false,status:'new'};
+  var U={};
+
   function el(t,c,txt){var n=document.createElement(t);if(c)n.className=c;if(txt!=null)n.textContent=txt;return n}
   function post(path,body){return fetch(BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok)throw j;return j})})}
   function money(n){return '$'+(Math.round(n)===n?n:n.toFixed(2))}
-  function answered(q){var a=S.ans[q.id];return q.type==='multi'?(a&&a.length>0):!!a}
-  function render(){
-    var c=S.cfg,qs=c.questions,q=qs[S.i];iv.textContent='';
-    if(S.i===0&&c.intro)iv.appendChild(el('div','h',c.intro));
-    iv.appendChild(el('div','st','Question '+(S.i+1)+' of '+qs.length));
-    var bar=el('div','bar'),fill=el('i');fill.style.width=((S.i)/qs.length*100)+'%';bar.appendChild(fill);iv.appendChild(bar);
-    var qt=el('div','q',q.text);qt.id='iv-q';iv.appendChild(qt);
-    if(q.hint)iv.appendChild(el('div','h',q.hint));
-    var txt=null;
-    if(q.type==='text'){
-      txt=el('input');txt.type='text';txt.maxLength=200;txt.setAttribute('aria-labelledby','iv-q');txt.value=S.ans[q.id]||'';
-      txt.addEventListener('input',function(){S.ans[q.id]=txt.value;nx.disabled=!txt.value.trim()});iv.appendChild(txt);
-    }else{
-      var box=el('div','opts');box.setAttribute('role','group');box.setAttribute('aria-labelledby','iv-q');
-      q.options.forEach(function(o){
-        var btn=el('button',null,o.label);btn.type='button';
-        var sel=q.type==='multi'?(S.ans[q.id]||[]).indexOf(o.id)>=0:S.ans[q.id]===o.id;
-        btn.setAttribute('aria-pressed',sel?'true':'false');
-        btn.addEventListener('click',function(){
-          if(q.type==='multi'){var a=(S.ans[q.id]||[]).slice(),k=a.indexOf(o.id);if(k>=0)a.splice(k,1);else a.push(o.id);S.ans[q.id]=a;render();}
-          else{S.ans[q.id]=o.id;if(o.text)render();else next();}
-        });
-        box.appendChild(btn);
+  function C(k,d){var c=(S.cfg&&S.cfg.chat)||{};return c[k]!=null?c[k]:d}
+  function lines(v){return [].concat(v==null?[]:v)}
+  function store(){try{localStorage.setItem(DRAFT,JSON.stringify({email:S.email,ans:S.ans,notes:S.notes,reacts:S.reacts,typed:S.typed}))}catch(_){}}
+  function loadDraft(email){try{var d=JSON.parse(localStorage.getItem(DRAFT)||'null');return d&&d.email===email?d:null}catch(_){return null}}
+  function clearDraft(){try{localStorage.removeItem(DRAFT)}catch(_){}}
+
+  // ---- layout: header (back, name, progress dots) / log / chips / composer
+  function build(){
+    iv.textContent='';
+    var top=el('div','top');
+    U.back=el('button','back','← '+C('back','Back'));U.back.type='button';U.back.addEventListener('click',goBack);
+    var who=el('span','who');who.appendChild(el('i'));who.appendChild(document.createTextNode('Vision'));
+    U.dots=el('div','dots');U.dots.setAttribute('role','img');
+    S.qs.forEach(function(){U.dots.appendChild(el('i'))});
+    top.appendChild(U.back);top.appendChild(who);top.appendChild(U.dots);
+    U.log=el('div','log');U.log.setAttribute('role','log');U.log.setAttribute('aria-live','polite');U.log.setAttribute('aria-label','Chat with Vision');
+    U.chips=el('div','chips');U.chips.setAttribute('role','group');
+    U.say=el('div','say');
+    U.inp=el('input');U.inp.type='text';U.inp.maxLength=200;U.inp.placeholder=C('typePlaceholder','Or type your answer');U.inp.setAttribute('aria-label',C('typePlaceholder','Type your answer'));U.inp.autocomplete='off';
+    U.send=el('button',null,C('send','Send'));U.send.type='button';
+    U.inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();typed()}});
+    U.send.addEventListener('click',typed);
+    U.say.appendChild(U.inp);U.say.appendChild(U.send);
+    iv.appendChild(top);iv.appendChild(U.log);iv.appendChild(U.chips);iv.appendChild(U.say);
+    iv.addEventListener('keydown',hotkeys);
+  }
+  function progress(){
+    var ds=U.dots.children;
+    for(var k=0;k<ds.length;k++){ds[k].className=k<S.i||S.ended?'on':(k===S.i?'cur':'')}
+    U.dots.setAttribute('aria-label',VI.fill(C('progress','Question {n} of {total}'),{n:Math.min(S.i+1,S.qs.length),total:S.qs.length}));
+    U.back.hidden=S.ended||S.i===0;
+  }
+  function scroll(){U.log.scrollTop=U.log.scrollHeight}
+  function bubble(cls,text,hint){var n=el('div','b '+cls,text);if(hint)n.appendChild(el('span','h',hint));U.log.appendChild(n);scroll();return n}
+
+  // Vision "types" each line: dots for a beat, then the bubble. Lines run one after another.
+  function say(items,done){
+    items=items.filter(Boolean);
+    (function next(k){
+      if(k>=items.length){if(done)done();return}
+      var it=typeof items[k]==='string'?{text:items[k]}:items[k];
+      var ms=reduce?0:Math.min(950,Math.max(380,(it.text||'').length*14));
+      var t=el('div','b v typing');t.setAttribute('aria-hidden','true');t.appendChild(el('i'));t.appendChild(el('i'));t.appendChild(el('i'));
+      var sr=el('span','sr',C('typing','Vision is typing'));
+      if(ms){U.log.appendChild(t);U.log.appendChild(sr);scroll()}
+      setTimeout(function(){
+        if(t.parentNode)t.remove();if(sr.parentNode)sr.remove();
+        var n=it.node||bubble('v'+(it.q?' q':''),it.text,it.hint);if(it.node){U.log.appendChild(n);scroll()}
+        next(k+1);
+      },ms);
+    })(0);
+  }
+
+  function cur(){return VI.resolve(S.qs[S.i],S.ans)}
+  function labelsOf(rq,ids){return lines(ids).map(function(id){var o=rq.options.filter(function(x){return x.id===id})[0];return o?o.label:id})}
+
+  // ---- the current question's chips
+  function chips(){
+    U.chips.textContent='';U.say.hidden=S.ended;
+    if(S.ended)return;
+    var rq=cur(),multi=rq.type==='multi',sel=lines(S.ans[rq.id]);
+    U.chips.setAttribute('aria-label',rq.text);
+    rq.options.forEach(function(o,k){
+      var btn=el('button');btn.type='button';btn.appendChild(document.createTextNode(o.label));
+      if(k<9&&hover){var kb=el('kbd',null,String(k+1));kb.setAttribute('aria-hidden','true');btn.appendChild(kb)}
+      btn.setAttribute('aria-pressed',sel.indexOf(o.id)>=0?'true':'false');btn.dataset.id=o.id;
+      btn.addEventListener('click',function(){
+        if(S.busy)return;
+        if(multi){btn.setAttribute('aria-pressed',btn.getAttribute('aria-pressed')==='true'?'false':'true');U.go.disabled=!picked().length}
+        else answer([o.id],null);
       });
-      iv.appendChild(box);
-      var ot=q.options.filter(function(o){return o.text&&[].concat(S.ans[q.id]||[]).indexOf(o.id)>=0})[0];
-      if(ot){txt=el('input');txt.type='text';txt.maxLength=200;txt.placeholder='Tell us (optional)';txt.setAttribute('aria-label',ot.label);txt.value=S.ans[q.id+':text']||'';
-        txt.addEventListener('input',function(){S.ans[q.id+':text']=txt.value});iv.appendChild(txt);}
+      U.chips.appendChild(btn);
+    });
+    if(multi){U.go=el('button','go',C('done','Done'));U.go.type='button';U.go.disabled=!sel.length;U.go.addEventListener('click',function(){if(!S.busy&&picked().length)answer(picked(),null)});U.chips.appendChild(U.go)}
+    U.inp.value='';
+    if(hover){var first=U.chips.querySelector('button');if(first)first.focus({preventScroll:true})}
+  }
+  function picked(){return [].slice.call(U.chips.querySelectorAll('button[aria-pressed="true"]')).map(function(x){return x.dataset.id})}
+
+  function hotkeys(ev){
+    if(S.busy||S.ended||ev.target===U.inp||ev.metaKey||ev.ctrlKey||ev.altKey)return;
+    var n=parseInt(ev.key,10);
+    if(n>=1&&n<=9){var btn=U.chips.querySelectorAll('button:not(.go)')[n-1];if(btn){ev.preventDefault();btn.click()}}
+    else if(ev.key==='Backspace'&&!U.back.hidden){ev.preventDefault();goBack()}
+  }
+
+  // Typed answer: match to chip(s) via config keywords/number ranges; otherwise keep it as a note and ask for the closest chip.
+  function typed(){
+    if(S.busy||S.ended)return;
+    var t=U.inp.value.replace(/\s+/g,' ').trim().slice(0,200);if(!t)return;
+    var rq=cur(),r=VI.matchText(rq,t);
+    U.inp.value='';
+    if(r.ids.length){
+      if(rq.type==='multi')r.ids=r.ids.concat(picked().filter(function(id){return r.ids.indexOf(id)<0}));
+      answer(r.ids,t);return;
     }
-    var nav=el('div','nav'),bk=el('button','back','\u2190 Back');bk.type='button';bk.style.visibility=S.i?'visible':'hidden';
-    bk.addEventListener('click',function(){S.i--;render()});
-    var nx=el('button',null,S.i===qs.length-1?'See my price':'Next');nx.type='button';nx.disabled=!answered(q)||(q.type==='text'&&!String(S.ans[q.id]||'').trim());
-    nx.addEventListener('click',next);nav.appendChild(bk);nav.appendChild(nx);iv.appendChild(nav);
-    if(txt)txt.focus();
+    S.busy=true;bubble('u',t);
+    if(rq.note)S.notes[rq.id]=t;
+    say([rq.reactNote||C('pickFirst','Pick the closest one.')],function(){S.busy=false;store();chips()});
   }
-  function next(){
-    var qs=S.cfg.questions;if(!answered(qs[S.i]))return;
-    if(S.i<qs.length-1){S.i++;render();return}
-    iv.textContent='';iv.appendChild(el('div','h','Working out your price...'));
-    post('/interview',{email:S.email,token:S.token,answers:S.ans}).then(function(r){
-      var q=r.quote;iv.textContent='';
-      iv.appendChild(el('div','q',S.cfg.thanks||"Thanks! You're on the list."));
-      var p=el('div','price',money(q.monthly));p.appendChild(el('small',null,' / month'));iv.appendChild(p);
-      iv.appendChild(el('div','h','or '+money(q.yearly)+' / year'));
-      if(q.powerTierCandidate)iv.appendChild(el('div','h','You might be a fit for our Power tier ('+money(q.powerTierMonthly)+'/mo, custom features built for you). We will reach out.'));
-      iv.appendChild(el('div','fine','This is a quote, not a charge. Nothing is billed now; you will hear from us before Vision launches.'));
-    }).catch(function(){iv.textContent='';iv.appendChild(el('div','h',"You're on the list. We couldn't save your answers just now."));
-      var r=el('button',null,'Try again');r.type='button';r.addEventListener('click',function(){S.i=S.cfg.questions.length-1;next()});iv.appendChild(r);});
+
+  function answer(ids,text){
+    var rq=cur();S.busy=true;
+    S.ans[rq.id]=rq.type==='multi'?ids:ids[0];
+    if(text){S.notes[rq.id]=text;S.typed[rq.id]=text}else delete S.typed[rq.id];
+    var note=S.notes[rq.id]||'';
+    S.reacts[rq.id]=VI.reaction(rq,S.ans[rq.id],rq.options.some(function(o){return o.text&&ids.indexOf(o.id)>=0})?note:'');
+    U.chips.textContent='';
+    bubble('u',text||VI.joinAnd(labelsOf(rq,ids)));
+    S.i++;store();
+    if(S.i<S.qs.length){var nq=cur();say([S.reacts[rq.id],{text:nq.text,hint:nq.hint,q:true}],function(){S.busy=false;progress();chips()});progress()}
+    else{S.ended=true;progress();U.say.hidden=true;say([S.reacts[rq.id],C('working','Working out your price...')],submit)}
   }
+
+  function payload(){
+    var a={};S.qs.forEach(function(q){a[q.id]=S.ans[q.id];if(S.notes[q.id])a[q.id+':text']=S.notes[q.id]});return a;
+  }
+  function submit(){
+    S.busy=true;
+    post('/interview',{email:S.email,token:S.token,answers:payload()}).then(function(r){
+      var q=r.quote,card=el('div','b v quote');
+      var p=el('div','price',money(q.monthly));p.appendChild(el('small',null,' '+C('perMonth','/ month')));card.appendChild(p);
+      card.appendChild(el('div','sub',VI.fill(C('yearly','or {yearly} / year'),{yearly:money(q.yearly)})));
+      if(q.powerTierCandidate)card.appendChild(el('div','pow',VI.fill(C('power','Power tier: {power}/mo.'),{power:money(q.powerTierMonthly)})));
+      card.appendChild(el('div','fine',C('fine','This is a quote, not a charge.')));
+      clearDraft();S.busy=false;
+      say([C('thanks',S.cfg.thanks||"Thanks! You're on the list."),{node:card,text:'..........................'}]);
+    }).catch(function(){
+      S.busy=false;
+      say([C('error',"You're on the list, but I couldn't save your answers just now.")],function(){
+        var r=el('button','go',C('retry','Try again'));r.type='button';
+        r.addEventListener('click',function(){U.chips.textContent='';say([C('working','Working out your price...')],submit)});
+        U.chips.appendChild(r);r.focus({preventScroll:true});
+      });
+    });
+  }
+
+  // Back: drop the current question, reopen the previous one with its answer still selected. Repaints instantly.
+  function goBack(){
+    if(S.busy||S.ended||S.i===0)return;
+    S.i--;delete S.reacts[S.qs[S.i].id];store();repaint();
+  }
+  function repaint(){
+    U.log.textContent='';
+    lines(S.status==='resume'?C('welcomeBack',[]):C('hello',[S.cfg.intro])).forEach(function(t){bubble('v',t)});
+    for(var k=0;k<S.i;k++){
+      var rq=VI.resolve(S.qs[k],S.ans);
+      bubble('v q',rq.text,rq.hint);
+      bubble('u',S.typed[rq.id]||VI.joinAnd(labelsOf(rq,S.ans[rq.id])));
+      if(S.reacts[rq.id])bubble('v',S.reacts[rq.id]);
+    }
+    var c=cur();bubble('v q',c.text,c.hint);
+    progress();chips();
+  }
+
+  function start(r,email){
+    S.email=email;S.token=r.token;S.cfg=r.interview;S.qs=r.interview.questions;S.status=r.status||'new';
+    S.ans={};S.notes={};S.reacts={};S.typed={};S.i=0;S.ended=false;
+    var d=loadDraft(email);
+    if(d){S.ans=d.ans||{};S.notes=d.notes||{};S.reacts=d.reacts||{};S.typed=d.typed||{};S.i=Math.min(VI.firstOpen(S.qs,S.ans),S.qs.length-1)}
+    row.hidden=true;lab.textContent="You're on the list";m.textContent='';iv.hidden=false;
+    build();progress();
+    var intro=lines(S.status==='resume'?C('welcomeBack',[]):C('hello',[S.cfg.intro]));
+    if(S.i>0){repaint();return}
+    S.busy=true;var q0=cur();
+    say(intro.concat([{text:q0.text,hint:q0.hint,q:true}]),function(){S.busy=false;chips()});
+  }
+
   f.addEventListener('submit',function(ev){
     ev.preventDefault();
+    if(!iv.hidden)return;
     var v=e.value.trim();
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.textContent='Enter a valid email.';return}
     b.disabled=true;m.textContent='Adding you...';
     post('',{email:v}).then(function(r){
       m.textContent="You're on the list.";e.value='';
+      if(r.status==='done'){S.cfg={chat:r.chat||{}};m.textContent=C('alreadyDone',"You're already on the list.");return}
       if(!r.interview||!r.token||!(r.interview.questions||[]).length)return;
-      S.email=v.toLowerCase();S.token=r.token;S.cfg=r.interview;S.i=0;S.ans={};
-      row.hidden=true;lab.textContent="You're on the list";m.textContent='';iv.hidden=false;render();
+      start(r,v.toLowerCase());
     }).catch(function(){m.textContent='Something went wrong. Try again.';b.disabled=false;});
   });
 })();

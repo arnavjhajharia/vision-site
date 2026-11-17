@@ -27,3 +27,11 @@ node scripts/sync-features.mjs --dry                # preview counts only
 Sync refreshes module names and descriptions but never overwrites a `status` or `category` you set by hand.
 New modules go to the manifest's `category` if valid, else `--category <id>` (default `productivity`). New modules start as
 `building`; modules that disappear are kept with `"removed": true` (hidden on the page).
+
+## Waitlist interview (chat with Vision)
+
+After signup, Vision runs a 5-question chat interview and shows a price quote. All copy (greeting, per-answer
+reactions, branches, chip labels, free-text matching) lives in personal-agent `data/waitlist-interview.json`; the
+page fetches it at signup, so editing that file changes the chat without touching this repo. `interview-core.js` is
+the pure logic (branch picking, typed-answer matching, reactions); `node --test tests/` runs its tests (uses the real
+config when personal-agent is checked out next to this repo).
