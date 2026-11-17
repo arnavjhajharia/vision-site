@@ -135,6 +135,17 @@
       const claimButton = document.getElementById('claim-button');
       let currentCode = '';
       let currentView = null;
+      let requestId = 0;
+
+      function readSavedCode() {
+        try { return localStorage.getItem('vision-amb-code') || ''; } catch (_) { return ''; }
+      }
+      function saveCode(code) {
+        try { localStorage.setItem('vision-amb-code', code); } catch (_) { /* Storage is optional. */ }
+      }
+      async function readResponse(response, fallback) {
+        try { return await response.json(); } catch (_) { throw new Error(fallback); }
+      }
 
       function money(value) {
         const amount = Number(value) || 0;
@@ -182,8 +193,16 @@
         document.getElementById('ambassador-name').textContent = view.name || 'Ambassador';
         document.getElementById('ambassador-code').textContent = 'Code · ' + view.code;
         const link = document.getElementById('referral-link');
-        link.href = view.link;
-        link.textContent = view.link;
+        link.removeAttribute('href');
+        link.removeAttribute('aria-disabled');
+        link.textContent = typeof view.link === 'string' ? view.link : '';
+        try {
+          const safeLink = new URL(view.link);
+          if (safeLink.protocol === 'http:' || safeLink.protocol === 'https:') link.href = safeLink.href;
+          else link.setAttribute('aria-disabled', 'true');
+        } catch (_) {
+          link.setAttribute('aria-disabled', 'true');
+        }
 
         const totals = view.totals || {};
         const stats = document.getElementById('stats');
@@ -236,26 +255,44 @@
         dashboard.hidden = false;
       }
       async function load(code) {
-        currentCode = code.trim();
-        if (!currentCode) { setMessage('Enter your ambassador code to continue.', true); return; }
+        const requestedCode = code.trim();
+        if (!requestedCode) { setMessage('Enter your ambassador code to continue.', true); return false; }
+        const thisRequest = ++requestId;
+        if (requestedCode !== currentCode) {
+          currentCode = '';
+          currentView = null;
+          dashboard.hidden = true;
+        }
         loadButton.disabled = true;
         claimButton.disabled = true;
         setMessage('Loading your dashboard…');
         try {
-          const query = new URLSearchParams({ code: currentCode });
+          const query = new URLSearchParams({ code: requestedCode });
           const response = await fetch(apiBase + '/api/ambassador?' + query.toString(), { headers: { Accept: 'application/json' } });
-          const body = await response.json();
+          const body = await readResponse(response, 'Dashboard could not be loaded. Please try again.');
+          if (thisRequest !== requestId) return false;
           if (!response.ok) {
             if (response.status === 404 || body.error === 'unknown_code') throw new Error('We couldn’t find that ambassador code. Check it and try again.');
             throw new Error('Dashboard could not be loaded. Please try again.');
           }
-          localStorage.setItem('vision-amb-code', currentCode);
+          currentCode = requestedCode;
+          saveCode(currentCode);
           render(body);
           setMessage('Dashboard updated.');
+          return true;
         } catch (error) {
+          if (thisRequest !== requestId) return false;
+          if (requestedCode !== currentCode) {
+            currentView = null;
+            dashboard.hidden = true;
+          }
           setMessage(error instanceof TypeError ? 'Could not connect to the dashboard. Check your connection and try again.' : error.message, true);
+          return false;
         } finally {
-          loadButton.disabled = false;
+          if (thisRequest === requestId) {
+            loadButton.disabled = false;
+            claimButton.disabled = !(currentView && Number(currentView.totals && currentView.totals.claimable) > 0);
+          }
         }
       }
       form.addEventListener('submit', (event) => { event.preventDefault(); load(codeInput.value); });
@@ -270,27 +307,38 @@
       });
       claimButton.addEventListener('click', async () => {
         if (!currentCode || claimButton.disabled) return;
+        const claimCode = currentCode;
+        const thisRequest = ++requestId;
         claimButton.disabled = true;
         setMessage('Submitting your claim…');
         try {
           const response = await fetch(apiBase + '/api/ambassador/claims', {
             method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify({ code: currentCode })
+            body: JSON.stringify({ code: claimCode })
           });
-          const body = await response.json();
+          const body = await readResponse(response, 'Your claim could not be submitted. Please try again.');
+          if (thisRequest !== requestId) return;
           if (!response.ok) {
             const errors = { already_claimed: 'These referrals have already been claimed.', nothing_to_claim: 'There is nothing available to claim right now.' };
             throw new Error(errors[body.error] || 'Your claim could not be submitted. Please try again.');
           }
-          await load(currentCode);
+          const refreshed = await load(claimCode);
+          if (!refreshed) return;
           setMessage('Claim submitted. It is now pending review.');
         } catch (error) {
+          if (thisRequest !== requestId) return;
           setMessage(error instanceof TypeError ? 'Could not connect to the dashboard. Your claim was not confirmed.' : error.message, true);
-          if (currentView) claimButton.disabled = !(Number(currentView.totals && currentView.totals.claimable) > 0);
+        } finally {
+          if (thisRequest === requestId) claimButton.disabled = !(currentView && Number(currentView.totals && currentView.totals.claimable) > 0);
         }
       });
 
-      const initialCode = params.get('code') || localStorage.getItem('vision-amb-code') || '';
+      let initialCode = params.get('code') || '';
+      if (!initialCode) {
+        let sameOriginApi = false;
+        try { sameOriginApi = new URL(apiBase, window.location.href).origin === window.location.origin; } catch (_) { /* Invalid API URLs fail on submit. */ }
+        if (sameOriginApi) initialCode = readSavedCode();
+      }
       codeInput.value = initialCode;
       if (initialCode) load(initialCode);
     })();
