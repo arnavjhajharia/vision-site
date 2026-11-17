@@ -79,24 +79,23 @@
     var claimedById = new Map();
     activeClaims.forEach(function (claim) { (claim.items || []).forEach(function (item) { claimedById.set(item.signupId, claim); }); });
     return (signups || []).filter(function (record) { return normalizeCode(record.ref) === code; }).map(function (record) {
-      var id = signupId(record.email, idSecret), details = billing && (billing[record.email] || billing[String(record.email).trim().toLowerCase()]) || {};
+      var id = signupId(record.email, idSecret), details = billing && billing[String(record.email).trim().toLowerCase()] || {};
       var status = statusOf(record, details), price = priceOf(record, details), month = revenue(status, price), claim = claimedById.get(id);
       return { signupId: id, firstName: firstName(record), status: status, plan: planOf(price), price: price,
         monthlyRevenue: cents(month), commission: cents(month), claimStatus: claim ? claim.status : null, joinedAt: record.at || null };
     });
   }
 
-  function claimableFor(code, signups, claims, billing, idSecret) {
-    var normalized = normalizeCode(code), claimed = new Set();
+  // Accept only the signup rows produced by ambassadorView; billing/status/IDs are already resolved there.
+  function claimableFor(code, signups, claims) {
+    var normalized = normalizeCode(code);
+    if (!normalized || !Array.isArray(signups)) return [];
+    var claimed = new Set();
     (claims || []).filter(function (claim) { return claim.status !== 'rejected'; }).forEach(function (claim) {
       (claim.items || []).forEach(function (item) { claimed.add(item.signupId); });
     });
-    return (signups || []).filter(function (record) { return normalizeCode(record.ref || record.code) === normalized; }).map(function (record) {
-      var details = billing && (billing[record.email] || billing[String(record.email || '').trim().toLowerCase()]) || {};
-      var id = record.signupId || signupId(record.email, idSecret);
-      var commission = record.commission != null ? Number(record.commission) : revenue(statusOf(record, details), priceOf(record, details));
-      return { signupId: id, record: record, commission: commission };
-    }).filter(function (entry) { return entry.commission > 0 && !claimed.has(entry.signupId); });
+    return signups.filter(function (signup) { return signup.commission > 0 && !claimed.has(signup.signupId); })
+      .map(function (signup) { return { signupId: signup.signupId, commission: cents(signup.commission) }; });
   }
 
   function createClaim(code, view, claims, signupIds, now, id) {
@@ -107,7 +106,8 @@
       (claim.items || []).forEach(function (item) { claimed.add(item.signupId); });
     });
     var all = (view.signups || []).filter(function (signup) { return signup.commission > 0; });
-    var requested = signupIds == null ? all.filter(function (signup) { return !claimed.has(signup.signupId); }).map(function (signup) { return signup.signupId; }) : signupIds;
+    var claimable = claimableFor(normalized, view.signups || [], claims);
+    var requested = signupIds == null ? claimable.map(function (item) { return item.signupId; }) : signupIds;
     if (!Array.isArray(requested)) throw codedError('not_claimable');
     if (!requested.length) throw codedError('nothing_to_claim');
     var unique = Array.from(new Set(requested));

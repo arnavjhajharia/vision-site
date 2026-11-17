@@ -18,12 +18,16 @@ test('billing status, price, plan and free commission rules', () => {
   assert.equal(Core.planOf(12), 'vision');
   assert.equal(Core.planOf(100), 'max');
   assert.equal(Core.planOf(50), 'custom');
-  const claimables = Core.claimableFor('manya', [
+  const rawForClaims = Core.mergeSignups([
     { email: 'free@example.com', ref: 'manya', paying: true, price: 15 },
     { email: 'override@example.com', ref: 'manya', price: 9 },
     { email: 'paid@example.com', ref: 'manya', paying: true, price: 8 }
-  ], [], { 'free@example.com': { status: 'free' }, 'override@example.com': { status: 'paying' } }, ID_SECRET);
-  assert.deepEqual(claimables.map((item) => item.record.email), ['override@example.com', 'paid@example.com']);
+  ]);
+  const claimsView = Core.ambassadorView('manya', { manya: 'Manya' }, rawForClaims,
+    { 'free@example.com': { status: 'free' }, 'override@example.com': { status: 'paying' } }, [], undefined, ID_SECRET);
+  const claimables = Core.claimableFor('manya', claimsView.signups, []);
+  assert.deepEqual(claimables.map((item) => item.signupId), claimsView.signups.filter((signup) => signup.commission > 0).map((signup) => signup.signupId));
+  assert.equal(claimables.length, 2);
   assert.equal(claimables[0].commission, 9);
   assert.equal(Core.ambassadorView('manya', { manya: 'Manya' }, [
     { email: 'free@example.com', ref: 'manya', paying: true, price: 0 },
@@ -99,6 +103,20 @@ test('claim-all skips previously claimed signups and reports nothing when exhaus
   const second = Core.createClaim('manya', view, [first], undefined, 't2', 'c2');
   assert.deepEqual(second.items.map((item) => item.signupId), [view.signups[1].signupId]);
   assert.throws(() => Core.createClaim('manya', view, [first, second], undefined), { code: 'nothing_to_claim' });
+});
+
+test('existing claim amount stays fixed after billing changes and signup remains unclaimable', () => {
+  const names = { manya: 'Manya' };
+  const records = Core.mergeSignups([{ email: 'client@example.com', ref: 'manya', paying: true, price: 12 }]);
+  const before = Core.ambassadorView('manya', names, records, {}, [], undefined, ID_SECRET);
+  const claim = Core.createClaim('manya', before, [], undefined, 'created', 'claim-before-billing-change');
+  assert.equal(claim.amount, 12);
+
+  const after = Core.ambassadorView('manya', names, records, { 'client@example.com': { status: 'free', price: 0 } }, [claim], undefined, ID_SECRET);
+  assert.equal(after.signups[0].commission, 0);
+  assert.equal(after.signups[0].claimStatus, 'pending');
+  assert.equal(after.claims[0].amount, 12);
+  assert.deepEqual(Core.claimableFor('manya', after.signups, [claim]), []);
 });
 
 test('claim transitions enforce pending, approved, paid and rejected paths', () => {

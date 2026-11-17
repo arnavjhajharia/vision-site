@@ -25,6 +25,7 @@ test('ambassador-report: counts signups per code, keeps first referral, skips em
     { email: 'a@x.io', at: '2026-11-17T00:00:00Z', ref: 'manya' },
     { email: 'b@x.io', at: '2026-11-17T00:00:00Z', ref: 'MANYA', interview: { answers: {} } },
     { email: 'a@x.io', at: '2026-11-17T01:00:00Z', ref: 'other' },
+    { email: 'A@x.io', at: '2026-11-17T02:00:00Z', ref: 'ghost' },
     { email: 'c@x.io', at: '2026-11-17T00:00:00Z' },
     { email: 'd@x.io', at: '2026-11-17T00:00:00Z', ref: 'ghost' },
   ].map((r) => JSON.stringify(r)).join('\n') + '\n');

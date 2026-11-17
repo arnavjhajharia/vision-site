@@ -79,7 +79,8 @@ one month of the amount each referred client actually pays; free or unpaid clien
 signup's commission can appear in only one non-rejected claim. Rejected claims release those signup
 months so they can be claimed again. Admin actions require the `ADMIN_TOKEN` used to start the server.
 Signup IDs are HMACs keyed by `AMBASSADOR_ID_SECRET`; if unset, the local server creates and reuses
-the ignored file `data/ambassador-id-secret`.
+the ignored file `data/ambassador-id-secret`. The claims ledger also stores its ID secret with the
+claims, and startup fails if a configured secret no longer matches that ledger.
 
 Access note: ambassador reads and claim submissions currently require only the referral code, which
 is public in each `?ref=` link. Anyone who sees a link can view that ambassador's referred first
