@@ -2,6 +2,12 @@
 
 Landing page for Vision, served by GitHub Pages from `main`.
 
+## Landing page
+
+Pitch-first, in this order: hero (typed headline, subhead, CTAs, and the animated chat demo from `demo.css` + `demo.js`
+rendering into `#vision-demo`), `#who`, `#how`, `#trust`, `#plans` (pricing), `#waitlist` (signup form + interview),
+then the `#features` tab.
+
 ## Features tab
 
 `features.json` is the single source of truth for the Features section. Each new feature is one entry:
@@ -30,7 +36,7 @@ New modules go to the manifest's `category` if valid, else `--category <id>` (de
 
 ## Pricing
 
-$1 to $20 a month, or $100/month for custom features. The landing letter and the Features tab (`#pricing` block) both
+$1 to $20 a month, or $100/month for custom features. The landing pricing section (`#plans`) and the Features tab (`#pricing` block) both
 show this line, plus two tiers: **Vision** ($1–$20/month, priced by usage via the interview quote) and **Custom**
 ($100/month: everything in Vision plus bespoke features built on request).
 
