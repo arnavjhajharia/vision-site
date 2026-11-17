@@ -1,0 +1,95 @@
+'use strict';
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+
+test('local server protects signup data and manages one-time claims', async (t) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ambassador-server-'));
+  const waitlistFile = path.join(dir, 'waitlist.jsonl');
+  const billingFile = path.join(dir, 'billing.json');
+  const claimsFile = path.join(dir, 'claims.json');
+  const namesFile = path.join(dir, 'ambassadors.json');
+  fs.writeFileSync(waitlistFile, [
+    JSON.stringify({ email: 'person@example.com', name: 'Taylor Reed', ref: 'manya', paying: true, price: 14, at: '2026-01-02' }),
+    JSON.stringify({ email: 'free@example.com', firstName: 'Free', ref: 'manya', paying: true, price: 10 }),
+    JSON.stringify({ email: 'second@example.com', name: 'Morgan Vale', ref: 'manya', paying: true, price: 7 })
+  ].join('\n') + '\n');
+  fs.writeFileSync(billingFile, JSON.stringify({ 'FREE@EXAMPLE.COM': { status: 'free', price: 0 } }));
+  fs.writeFileSync(namesFile, JSON.stringify({ manya: 'Manya' }));
+  const { createServer } = await import('../scripts/ambassador-server.mjs');
+  const serverOptions = { port: 0, root: path.resolve(__dirname, '..'), waitlistFile, billingFile, claimsFile, namesFile, idSecretFile: path.join(dir, 'id-secret'), idSecret: 'persisted-test-id-secret', adminToken: 'test-admin-token' };
+  const server = createServer(serverOptions);
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  t.after(async () => { await new Promise((resolve) => server.close(resolve)); fs.rmSync(dir, { recursive: true, force: true }); });
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const request = (url, options) => fetch(base + url, options);
+  const postJson = (url, body, token) => request(url, { method: 'POST', headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body) });
+
+  assert.equal((await request('/api/ambassador?code=bad')).status, 404);
+  const viewResponse = await request('/api/ambassador?code=MANYA');
+  assert.equal(viewResponse.status, 200);
+  const viewText = await viewResponse.text();
+  assert.doesNotMatch(viewText, /@/);
+  const view = JSON.parse(viewText);
+  assert.equal(view.totals.commissionEarned, 21);
+  const signupId = view.signups.find((signup) => signup.firstName === 'Taylor').signupId;
+  const claimResponse = await postJson('/api/ambassador/claims', { code: 'manya', signupIds: [signupId] });
+  assert.equal(claimResponse.status, 201);
+  const { claim } = await claimResponse.json();
+  const secondClaim = await postJson('/api/ambassador/claims', { code: 'manya', signupIds: [signupId] });
+  assert.equal(secondClaim.status, 400);
+  assert.equal((await secondClaim.json()).error, 'already_claimed');
+  const claimAllAfterPartial = await postJson('/api/ambassador/claims', { code: 'manya' });
+  assert.equal(claimAllAfterPartial.status, 201);
+  const claimAllResult = await claimAllAfterPartial.json();
+  assert.equal(claimAllResult.claim.items.length, 1);
+  assert.notEqual(claimAllResult.claim.items[0].signupId, signupId);
+  const exhaustedClaimAll = await postJson('/api/ambassador/claims', { code: 'manya' });
+  assert.equal(exhaustedClaimAll.status, 400);
+  assert.equal((await exhaustedClaimAll.json()).error, 'nothing_to_claim');
+
+  assert.equal((await request('/api/admin')).status, 401);
+  assert.equal((await request('/api/admin', { headers: { authorization: 'Bearer wrong-token' } })).status, 401);
+  assert.equal((await request('/api/admin', { headers: { authorization: 'test-admin-token' } })).status, 401);
+  assert.equal((await request('/api/admin', { headers: { authorization: 'Bearer test-admin-token' } })).status, 200);
+  assert.equal((await postJson('/api/admin/claims/%E0%A4%A/approve', {}, 'test-admin-token')).status, 404);
+  const approved = await postJson(`/api/admin/claims/${claim.id}/approve`, {}, 'test-admin-token');
+  assert.equal(approved.status, 200);
+  const paid = await postJson(`/api/admin/claims/${claim.id}/paid`, {}, 'test-admin-token');
+  assert.equal(paid.status, 200);
+  const invalidTransition = await postJson(`/api/admin/claims/${claim.id}/approve`, {}, 'test-admin-token');
+  assert.equal(invalidTransition.status, 409);
+  const rejected = await postJson(`/api/admin/claims/${claimAllResult.claim.id}/reject`, {}, 'test-admin-token');
+  assert.equal(rejected.status, 200);
+  assert.equal((await rejected.json()).claim.status, 'rejected');
+  const oversized = await postJson('/api/ambassador/claims', { code: 'manya', padding: 'x'.repeat(11 * 1024) });
+  assert.equal(oversized.status, 413);
+  assert.equal((await request('/data/ambassador-claims.json')).status, 404);
+  assert.equal((await request('/waitlist.jsonl')).status, 404);
+
+  const persisted = JSON.parse(fs.readFileSync(claimsFile, 'utf8'));
+  assert.equal(persisted.claims.length, 2);
+  assert.equal(persisted.idSecret, 'persisted-test-id-secret');
+  assert.deepEqual(fs.readdirSync(dir).filter((name) => name.endsWith('.tmp')), []);
+  assert.throws(() => createServer({ ...serverOptions, idSecret: 'changed-test-id-secret' }), /id_secret_mismatch/);
+
+  const restarted = createServer(serverOptions);
+  await new Promise((resolve) => restarted.listen(0, '127.0.0.1', resolve));
+  t.after(async () => { await new Promise((resolve) => restarted.close(resolve)); });
+  const restartedViewResponse = await fetch(`http://127.0.0.1:${restarted.address().port}/api/ambassador?code=manya`);
+  const restartedView = await restartedViewResponse.json();
+  assert.equal(restartedView.signups.find((signup) => signup.firstName === 'Taylor').claimStatus, 'paid');
+  assert.equal(restartedView.claims.length, 2);
+  assert.deepEqual(restartedView.claims.map((claim) => claim.status).sort(), ['paid', 'rejected']);
+  assert.equal(restartedView.signups.find((signup) => signup.firstName === 'Morgan').signupId,
+    view.signups.find((signup) => signup.firstName === 'Morgan').signupId);
+
+  const disabled = createServer({ port: 0, root: path.resolve(__dirname, '..'), waitlistFile, billingFile, claimsFile, namesFile, idSecretFile: path.join(dir, 'disabled-id-secret'), adminToken: '' });
+  await new Promise((resolve) => disabled.listen(0, '127.0.0.1', resolve));
+  t.after(async () => { await new Promise((resolve) => disabled.close(resolve)); });
+  const disabledResponse = await fetch(`http://127.0.0.1:${disabled.address().port}/api/admin`);
+  assert.equal(disabledResponse.status, 503);
+  assert.equal((await disabledResponse.json()).error, 'admin_disabled');
+});
