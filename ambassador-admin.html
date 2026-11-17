@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="dark">
+  <title>Vision · Ambassador Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: dark; --bg:#0a0a0a; --ink:#ffffff; --soft:#8a8a8a; --dim:#777777; --rule:rgba(255,255,255,.14); --glow:#3b52ff; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:300 15px/1.5 Geist, sans-serif; }
+    main { width:min(1440px, calc(100% - 48px)); margin:0 auto; padding:58px 0 80px; }
+    header { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; padding-bottom:26px; border-bottom:1px solid var(--rule); }
+    h1 { margin:0; font-size:32px; line-height:1.15; font-weight:300; letter-spacing:-.04em; }
+    h2 { margin:0; font-size:17px; font-weight:400; }
+    .eyebrow, .mono, code, .metric-label { font-family:"Geist Mono", monospace; }
+    .eyebrow { color:var(--soft); text-transform:uppercase; letter-spacing:.12em; font-size:11px; margin:0 0 9px; }
+    .login { display:flex; align-items:center; gap:8px; }
+    input, select, button { border:1px solid var(--rule); border-radius:3px; background:#111; color:var(--ink); font:inherit; padding:10px 12px; }
+    input { width:240px; }
+    button { cursor:pointer; transition:background .15s ease, border-color .15s ease; }
+    button:hover { background:#1b1b1b; border-color:rgba(255,255,255,.35); }
+    button:disabled { opacity:.45; cursor:wait; }
+    .primary { background:var(--glow); border-color:var(--glow); }
+    .primary:hover { background:#4b61ff; }
+    #message { min-height:24px; margin:14px 0 0; color:var(--soft); }
+    #message.error { color:#ff8d8d; }
+    .metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; margin:28px 0 44px; background:var(--rule); border:1px solid var(--rule); }
+    .metric { min-height:106px; padding:19px 20px; background:var(--bg); }
+    .metric-label { color:var(--soft); font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
+    .metric-value { margin-top:12px; font-size:25px; letter-spacing:-.03em; }
+    section { margin-top:42px; }
+    .section-head { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:15px; }
+    .note { color:var(--soft); font-size:12px; }
+    .table-wrap { overflow:auto; border:1px solid var(--rule); }
+    table { width:100%; border-collapse:collapse; text-align:left; font-size:13px; }
+    th, td { padding:12px 13px; border-bottom:1px solid var(--rule); white-space:nowrap; }
+    th { color:var(--soft); font:400 10px "Geist Mono",monospace; letter-spacing:.05em; text-transform:uppercase; }
+    tbody tr:last-child td { border-bottom:0; }
+    td a { color:#aab5ff; text-decoration:none; }
+    td a:hover { text-decoration:underline; }
+    .perk { color:#b4bdff; font-size:11px; display:block; margin-top:3px; }
+    .status { display:inline-block; border:1px solid var(--rule); border-radius:20px; padding:2px 8px; color:#ddd; font:11px "Geist Mono",monospace; text-transform:capitalize; }
+    .actions { display:flex; gap:6px; }
+    .actions button { padding:6px 9px; font-size:11px; }
+    .empty { color:var(--soft); text-align:center; padding:24px; }
+    @media (max-width:800px) { main { width:calc(100% - 28px); padding-top:32px; } header { align-items:flex-start; flex-direction:column; } .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .login { width:100%; } input { flex:1; min-width:0; } }
+    @media (max-width:460px) { .metrics { grid-template-columns:1fr 1fr; } .metric { padding:14px; } .metric-value { font-size:20px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><p class="eyebrow">Vision · Private admin</p><h1>Ambassador dashboard</h1></div>
+      <form class="login" id="login-form">
+        <input id="admin-token" type="password" autocomplete="current-password" placeholder="Admin token" aria-label="Admin token">
+        <button class="primary" type="submit">Load dashboard</button>
+      </form>
+    </header>
+    <p id="message" role="status" aria-live="polite">Enter the server admin token to load ambassador and claim data.</p>
+    <div class="metrics" id="metrics" aria-label="Dashboard totals"></div>
+    <section>
+      <div class="section-head"><div><p class="eyebrow">Network</p><h2>Ambassadors</h2></div><span class="note">Vision Max free while active</span></div>
+      <div class="table-wrap"><table><thead><tr>
+        <th>Name</th><th>Code</th><th>Referral link</th><th>Signups</th><th>Interviewed</th><th>Paying</th><th>Monthly revenue</th><th>Commission earned</th><th>Claimable</th><th>Pending</th><th>Owed</th><th>Paid</th>
+      </tr></thead><tbody id="ambassadors-body"><tr><td class="empty" colspan="12">Load data to view ambassadors.</td></tr></tbody></table></div>
+    </section>
+    <section>
+      <div class="section-head"><div><p class="eyebrow">Payouts</p><h2>Commission claims</h2></div>
+        <label class="note" for="claim-filter">Status&nbsp; <select id="claim-filter"><option value="all">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="paid">Paid</option><option value="rejected">Rejected</option></select></label>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Ambassador</th><th>Referred clients</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody id="claims-body"><tr><td class="empty" colspan="6">Load data to view claims.</td></tr></tbody></table></div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      'use strict';
+      const TOKEN_KEY = 'vision-amb-admin';
+      const apiBase = (new URL(location.href).searchParams.get('api') || location.origin).replace(/\/$/, '');
+      const tokenInput = document.getElementById('admin-token');
+      const message = document.getElementById('message');
+      const metrics = document.getElementById('metrics');
+      const ambassadorsBody = document.getElementById('ambassadors-body');
+      const claimsBody = document.getElementById('claims-body');
+      const filter = document.getElementById('claim-filter');
+      const actionEndpoint = { approve:'/approve', paid:'/paid', reject:'/reject' };
+      let dashboard = null;
+      tokenInput.value = sessionStorage.getItem(TOKEN_KEY) || '';
+
+      function setMessage(text, isError) { message.textContent = text; message.className = isError ? 'error' : ''; }
+      function money(value) { return new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', maximumFractionDigits:2 }).format(Number(value) || 0); }
+      function date(value) {
+        if (!value) return '—';
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? String(value) : new Intl.DateTimeFormat('en-US', { dateStyle:'medium' }).format(parsed);
+      }
+      function node(tag, value, className) {
+        const element = document.createElement(tag);
+        if (value != null) element.textContent = String(value);
+        if (className) element.className = className;
+        return element;
+      }
+      function rowMessage(body, columns, text) {
+        const tr = document.createElement('tr'), td = node('td', text, 'empty');
+        td.colSpan = columns; tr.append(td); body.replaceChildren(tr);
+      }
+      async function request(path, options = {}) {
+        const response = await fetch(apiBase + path, { ...options, headers: { Authorization: 'Bearer ' + (sessionStorage.getItem(TOKEN_KEY) || ''), ...(options.headers || {}) } });
+        let payload = {};
+        try { payload = await response.json(); } catch (_) {}
+        if (!response.ok) {
+          const detail = response.status === 401 ? 'The admin token is incorrect (401).' : response.status === 503 ? 'Admin actions are disabled: ADMIN_TOKEN is not set on the server (503).' : response.status === 409 ? 'This claim has already changed state (409). The dashboard was refreshed.' : `Request failed (${response.status}): ${payload.error || 'unknown_error'}.`;
+          const error = new Error(detail); error.status = response.status; throw error;
+        }
+        return payload;
+      }
+      function renderMetrics(data) {
+        const totals = data.totals || {};
+        const cards = [
+          ['Ambassadors', data.ambassadors.length], ['Signups', totals.signups], ['Paying', totals.paying], ['Monthly revenue', money(totals.monthlyRevenue)],
+          ['Commission earned', money(totals.commissionEarned)], ['Pending', money(totals.pending)], ['Approved / owed', money(totals.owed)], ['Paid', money(totals.paid)]
+        ];
+        metrics.replaceChildren();
+        cards.forEach(([label, value]) => { const card = node('div', null, 'metric'); card.append(node('div', label, 'metric-label'), node('div', value == null ? '—' : value, 'metric-value')); metrics.append(card); });
+      }
+      function renderAmbassadors(data) {
+        ambassadorsBody.replaceChildren();
+        if (!data.ambassadors.length) { rowMessage(ambassadorsBody, 12, 'No ambassadors found.'); return; }
+        data.ambassadors.forEach((ambassador) => {
+          const tr = document.createElement('tr');
+          const nameCell = node('td'); nameCell.append(node('span', ambassador.name || '—'), node('span', 'Vision Max free while active', 'perk'));
+          const codeCell = node('td'); codeCell.append(node('code', ambassador.code || ''));
+          const link = document.createElement('a'); link.href = 'https://arnavjhajharia.github.io/vision-site/?ref=' + encodeURIComponent(ambassador.code || ''); link.textContent = 'Open link'; link.target = '_blank'; link.rel = 'noopener noreferrer';
+          const linkCell = node('td'); linkCell.append(link);
+          tr.append(nameCell, codeCell, linkCell);
+          ['signups', 'interviewed', 'paying'].forEach((key) => tr.append(node('td', ambassador[key] ?? 0)));
+          ['monthlyRevenue', 'commissionEarned', 'claimable', 'pending', 'owed', 'paid'].forEach((key) => tr.append(node('td', money(ambassador[key]))));
+          ambassadorsBody.append(tr);
+        });
+      }
+      function actionButton(label, action, claim) {
+        const button = node('button', label); button.type = 'button';
+        button.addEventListener('click', () => changeClaim(claim, action, button)); return button;
+      }
+      function renderClaims(data) {
+        claimsBody.replaceChildren();
+        const status = filter.value;
+        const claims = data.claims.filter((claim) => status === 'all' || claim.status === status);
+        if (!claims.length) { rowMessage(claimsBody, 6, 'No claims match this status.'); return; }
+        claims.forEach((claim) => {
+          const tr = document.createElement('tr');
+          tr.append(node('td', date(claim.createdAt)), node('td', claim.name || claim.code || '—'));
+          const people = (claim.items || []).map((item) => item.firstName || 'Someone').join(', ') || '—';
+          tr.append(node('td', people), node('td', money(claim.amount)));
+          tr.append(node('td', claim.status || 'unknown', 'status'));
+          const actions = node('td'), actionGroup = node('div', null, 'actions');
+          if (claim.status === 'pending') actionGroup.append(actionButton('Approve', 'approve', claim));
+          if (claim.status === 'approved') actionGroup.append(actionButton('Mark paid', 'paid', claim));
+          if (claim.status === 'pending' || claim.status === 'approved') actionGroup.append(actionButton('Reject', 'reject', claim));
+          if (!actionGroup.childElementCount) actionGroup.textContent = '—';
+          actions.append(actionGroup); tr.append(actions); claimsBody.append(tr);
+        });
+      }
+      function render(data) { dashboard = data; renderMetrics(data); renderAmbassadors(data); renderClaims(data); }
+      async function load() {
+        setMessage('Loading dashboard…', false);
+        try { const data = await request('/api/admin'); render(data); setMessage('Dashboard updated.', false); }
+        catch (error) { setMessage(error.message, true); if (error.status === 409) { try { render(await request('/api/admin')); } catch (refreshError) { setMessage(refreshError.message, true); } } }
+      }
+      async function changeClaim(claim, action, button) {
+        if ((action === 'paid' || action === 'reject') && !confirm(action === 'paid' ? `Mark this ${money(claim.amount)} claim as paid?` : `Reject this ${money(claim.amount)} claim?`)) return;
+        button.disabled = true;
+        try {
+          await request('/api/admin/claims/' + encodeURIComponent(claim.id) + actionEndpoint[action], { method:'POST', headers:{ 'Content-Type':'application/json' }, body:'{}' });
+          await load();
+        } catch (error) { setMessage(error.message, true); if (error.status === 409) { try { render(await request('/api/admin')); } catch (refreshError) { setMessage(refreshError.message, true); } } }
+        finally { button.disabled = false; }
+      }
+      document.getElementById('login-form').addEventListener('submit', (event) => {
+        event.preventDefault(); sessionStorage.setItem(TOKEN_KEY, tokenInput.value.trim()); load();
+      });
+      filter.addEventListener('change', () => { if (dashboard) renderClaims(dashboard); });
+      if (tokenInput.value) load();
+    })();
+  </script>
+</body>
+</html>
