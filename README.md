@@ -78,6 +78,13 @@ Claims are saved to the ignored local file `data/ambassador-claims.json` by defa
 one month of the amount each referred client actually pays; free or unpaid clients earn $0. Each
 signup's commission can appear in only one non-rejected claim. Rejected claims release those signup
 months so they can be claimed again. Admin actions require the `ADMIN_TOKEN` used to start the server.
+Signup IDs are HMACs keyed by `AMBASSADOR_ID_SECRET`; if unset, the local server creates and reuses
+the ignored file `data/ambassador-id-secret`.
+
+Access note: ambassador reads and claim submissions currently require only the referral code, which
+is public in each `?ref=` link. Anyone who sees a link can view that ambassador's referred first
+names, statuses and prices, and submit claims. Before moving these endpoints to personal-agent, add
+a per-ambassador secret or PIN (or account authentication).
 
 This Node server is a local stand-in until equivalent endpoints are added to the personal-agent
 server; connecting or deploying those endpoints needs Arnav's OK.

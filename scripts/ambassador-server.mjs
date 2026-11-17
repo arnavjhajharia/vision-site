@@ -20,8 +20,23 @@ function defaults(opts = {}) {
     billingFile: opts.billingFile || process.env.AMBASSADOR_BILLING_FILE || path.resolve(ROOT, '..', 'personal-agent', 'data', 'ambassador-billing.json'),
     claimsFile: opts.claimsFile || process.env.AMBASSADOR_CLAIMS_FILE || path.join(ROOT, 'data', 'ambassador-claims.json'),
     namesFile: opts.namesFile || path.join(ROOT, 'ambassadors.json'),
-    adminToken: opts.adminToken ?? process.env.ADMIN_TOKEN
+    adminToken: opts.adminToken ?? process.env.ADMIN_TOKEN,
+    idSecret: opts.idSecret ?? process.env.AMBASSADOR_ID_SECRET,
+    idSecretFile: opts.idSecretFile || path.join(opts.root || ROOT, 'data', 'ambassador-id-secret')
   };
+}
+
+function getIdSecret(config) {
+  if (config.idSecret) return String(config.idSecret);
+  try { return fs.readFileSync(config.idSecretFile, 'utf8').trim(); }
+  catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    fs.mkdirSync(path.dirname(config.idSecretFile), { recursive: true });
+    const secret = crypto.randomBytes(32).toString('hex');
+    try { fs.writeFileSync(config.idSecretFile, `${secret}\n`, { mode: 0o600, flag: 'wx' }); }
+    catch (writeError) { if (writeError.code !== 'EEXIST') throw writeError; }
+    return fs.readFileSync(config.idSecretFile, 'utf8').trim();
+  }
 }
 
 function readJson(file, fallback) {
@@ -37,7 +52,8 @@ function loadData(config) {
   const billing = readJson(config.billingFile, {});
   const claims = readJson(config.claimsFile, []);
   const names = readJson(config.namesFile, {});
-  return { records, billing, claims, names };
+  const idSecret = getIdSecret(config);
+  return { records, billing, claims, names, idSecret };
 }
 
 function json(res, status, body) {
@@ -48,13 +64,20 @@ function json(res, status, body) {
 
 function readBody(req) {
   return new Promise((resolve, reject) => {
-    const chunks = []; let size = 0;
+    const chunks = []; let size = 0; let settled = false;
     req.on('data', (chunk) => {
+      if (settled) return;
       size += chunk.length;
-      if (size > 10 * 1024) { reject(Object.assign(new Error('body_too_large'), { status: 413 })); req.destroy(); return; }
+      if (size > 10 * 1024) {
+        settled = true;
+        reject(Object.assign(new Error('body_too_large'), { status: 413 }));
+        req.removeAllListeners('data'); req.resume(); return;
+      }
       chunks.push(chunk);
     });
     req.on('end', () => {
+      if (settled) return;
+      settled = true;
       if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) return reject(Object.assign(new Error('invalid_content_type'), { status: 400 }));
       try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')); }
       catch (_) { reject(Object.assign(new Error('invalid_json'), { status: 400 })); }
@@ -98,13 +121,13 @@ export function createServer(opts = {}) {
         const code = Interview.normalizeRef(url.searchParams.get('code'));
         const data = loadData(config);
         if (!code || !Object.prototype.hasOwnProperty.call(data.names, code)) { json(res, 404, { error: 'unknown_code' }); return; }
-        json(res, 200, Core.ambassadorView(code, data.names, data.records, data.billing, data.claims)); return;
+        json(res, 200, Core.ambassadorView(code, data.names, data.records, data.billing, data.claims, undefined, data.idSecret)); return;
       }
       if (req.method === 'POST' && route === '/api/ambassador/claims') {
         const body = await readBody(req); const code = Interview.normalizeRef(body.code);
         const data = loadData(config);
         if (!code || !Object.prototype.hasOwnProperty.call(data.names, code)) { json(res, 404, { error: 'unknown_code' }); return; }
-        const view = Core.ambassadorView(code, data.names, data.records, data.billing, data.claims);
+        const view = Core.ambassadorView(code, data.names, data.records, data.billing, data.claims, undefined, data.idSecret);
         try {
           const claim = Core.createClaim(code, view, data.claims, body.signupIds, new Date().toISOString(), crypto.randomUUID());
           data.claims.push(claim); saveClaims(config.claimsFile, data.claims); json(res, 201, { claim });
@@ -116,12 +139,14 @@ export function createServer(opts = {}) {
       }
       if (req.method === 'GET' && route === '/api/admin') {
         const authError = authorized(req, config); if (authError) { json(res, authError.status, { error: authError.error }); return; }
-        const data = loadData(config); json(res, 200, Core.adminView(data.names, data.records, data.billing, data.claims)); return;
+        const data = loadData(config); json(res, 200, Core.adminView(data.names, data.records, data.billing, data.claims, data.idSecret)); return;
       }
       const adminClaim = route.match(/^\/api\/admin\/claims\/([^/]+)\/(approve|paid|reject)$/);
       if (req.method === 'POST' && adminClaim) {
         const authError = authorized(req, config); if (authError) { json(res, authError.status, { error: authError.error }); return; }
-        const data = loadData(config), index = data.claims.findIndex((claim) => claim.id === decodeURIComponent(adminClaim[1]));
+        let claimId;
+        try { claimId = decodeURIComponent(adminClaim[1]); } catch (_) { json(res, 404, { error: 'unknown_claim' }); return; }
+        const data = loadData(config), index = data.claims.findIndex((claim) => claim.id === claimId);
         if (index < 0) { json(res, 404, { error: 'unknown_claim' }); return; }
         try {
           data.claims[index] = Core.transition(data.claims[index], adminClaim[2], new Date().toISOString());

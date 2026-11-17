@@ -2,6 +2,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const Core = require('../ambassador-core.js');
+const ID_SECRET = 'unit-test-secret-not-for-production';
 
 test('billing status, price, plan and free commission rules', () => {
   assert.equal(Core.statusOf({ paying: true }, {}), 'paying');
@@ -17,20 +18,28 @@ test('billing status, price, plan and free commission rules', () => {
   assert.equal(Core.planOf(12), 'vision');
   assert.equal(Core.planOf(100), 'max');
   assert.equal(Core.planOf(50), 'custom');
+  const claimables = Core.claimableFor('manya', [
+    { email: 'free@example.com', ref: 'manya', paying: true, price: 15 },
+    { email: 'override@example.com', ref: 'manya', price: 9 },
+    { email: 'paid@example.com', ref: 'manya', paying: true, price: 8 }
+  ], [], { 'free@example.com': { status: 'free' }, 'override@example.com': { status: 'paying' } }, ID_SECRET);
+  assert.deepEqual(claimables.map((item) => item.record.email), ['override@example.com', 'paid@example.com']);
+  assert.equal(claimables[0].commission, 9);
   assert.equal(Core.ambassadorView('manya', { manya: 'Manya' }, [
     { email: 'free@example.com', ref: 'manya', paying: true, price: 0 },
     { email: 'max@example.com', ref: 'manya', paying: true, price: 100 }
-  ], {}, [], 'https://example.test/').totals.commissionEarned, 100);
+  ], {}, [], 'https://example.test/', ID_SECRET).totals.commissionEarned, 100);
 });
 
 test('merging keeps first non-empty normalized referral and names never come from email', () => {
   const records = Core.mergeSignups([
     { email: 'A@EXAMPLE.COM', name: 'Riley Park', ref: '  ' },
-    { email: 'A@EXAMPLE.COM', firstName: '', ref: ' MANYA ', plan: 'Vision' },
+    { email: 'a@example.com', firstName: '', ref: ' MANYA ', plan: 'Vision' },
     { email: 'A@EXAMPLE.COM', ref: 'other' }
   ]);
   assert.equal(records.length, 1);
   assert.equal(records[0].ref, 'manya');
+  assert.equal(records[0].email, 'A@EXAMPLE.COM');
   assert.equal(records[0].plan, 'Vision');
   assert.equal(Core.firstName({ email: 'secret@example.com' }), 'Someone');
   assert.equal(Core.firstName({ name: 'Riley Park' }), 'Riley');
@@ -49,7 +58,7 @@ function fixture() {
 test('views hide emails, expose revenue and claimable amounts, and include zero-signup ambassadors', () => {
   const names = { manya: 'Manya', empty: 'Empty' }, records = fixture();
   const billing = { 'free@example.com': { status: 'free', price: 0 } };
-  const view = Core.ambassadorView('manya', names, records, billing, []);
+  const view = Core.ambassadorView('manya', names, records, billing, [], undefined, ID_SECRET);
   assert.equal(view.totals.signups, 3);
   assert.equal(view.totals.interviewed, 3);
   assert.equal(view.totals.paying, 2);
@@ -60,13 +69,13 @@ test('views hide emails, expose revenue and claimable amounts, and include zero-
   assert.equal(view.signups.find((row) => row.firstName === 'Jo').price, 0);
   assert.equal(view.signups.find((row) => row.firstName === 'Jo').commission, 0);
   assert.doesNotMatch(JSON.stringify(view), /@/);
-  const admin = Core.adminView(names, records, billing, []);
+  const admin = Core.adminView(names, records, billing, [], ID_SECRET);
   assert.equal(admin.ambassadors.find((row) => row.code === 'empty').signups, 0);
   assert.doesNotMatch(JSON.stringify(admin), /@/);
 });
 
 test('claims cannot double-claim signup months; rejecting releases them', () => {
-  const names = { manya: 'Manya' }, records = fixture(), view = Core.ambassadorView('manya', names, records, {}, []);
+  const names = { manya: 'Manya' }, records = fixture(), view = Core.ambassadorView('manya', names, records, {}, [], undefined, ID_SECRET);
   const id = view.signups.find((row) => row.firstName === 'Ari').signupId;
   const first = Core.createClaim('manya', view, [], [id], '2026-02-01T00:00:00Z', 'claim-1');
   assert.equal(first.amount, 12);
@@ -76,6 +85,20 @@ test('claims cannot double-claim signup months; rejecting releases them', () => 
   assert.equal(second.items[0].signupId, id);
   assert.throws(() => Core.createClaim('manya', view, [], []), { code: 'nothing_to_claim' });
   assert.throws(() => Core.createClaim('manya', view, [], ['unknown']), { code: 'not_claimable' });
+  assert.throws(() => Core.createClaim('other', view, [], [id]), { code: 'not_claimable' });
+});
+
+test('claim-all skips previously claimed signups and reports nothing when exhausted', () => {
+  const names = { manya: 'Manya' };
+  const records = Core.mergeSignups([
+    { email: 'first@example.com', ref: 'manya', paying: true, price: 12 },
+    { email: 'second@example.com', ref: 'manya', paying: true, price: 8 }
+  ]);
+  const view = Core.ambassadorView('manya', names, records, {}, [], undefined, ID_SECRET);
+  const first = Core.createClaim('manya', view, [], [view.signups[0].signupId], 't1', 'c1');
+  const second = Core.createClaim('manya', view, [first], undefined, 't2', 'c2');
+  assert.deepEqual(second.items.map((item) => item.signupId), [view.signups[1].signupId]);
+  assert.throws(() => Core.createClaim('manya', view, [first, second], undefined), { code: 'nothing_to_claim' });
 });
 
 test('claim transitions enforce pending, approved, paid and rejected paths', () => {
