@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Ambassador dashboard · Vision</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0a0a0a;--ink:#ffffff;--soft:#8a8a8a;--dim:#777777;--rule:rgba(255,255,255,.14);--glow:#3b52ff;
+      --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --mono:"Geist Mono",ui-monospace,Menlo,Consolas,monospace;
+      color-scheme:dark;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-weight:300; line-height:1.5; }
+    a { color:inherit; text-decoration:none; }
+    button,input { font:inherit; }
+    .wrap { width:min(100% - 40px, 1040px); margin:0 auto; }
+    header { height:76px; border-bottom:1px solid var(--rule); display:flex; align-items:center; }
+    .brand { font-size:14px; letter-spacing:-.03em; }
+    main { padding:64px 0 88px; }
+    .eyebrow,.label { color:var(--soft); font:400 11px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; }
+    h1 { margin:12px 0 10px; font-size:clamp(34px,6vw,52px); line-height:1.05; font-weight:300; letter-spacing:-.055em; }
+    .intro { color:var(--soft); max-width:560px; margin:0; font-size:15px; }
+    .lookup { display:flex; gap:10px; margin:34px 0 24px; max-width:620px; }
+    input { min-width:0; flex:1; padding:13px 14px; color:var(--ink); background:#111; border:1px solid var(--rule); border-radius:3px; outline:none; }
+    input:focus { border-color:var(--glow); }
+    button { color:var(--ink); background:var(--glow); border:1px solid var(--glow); border-radius:3px; padding:12px 17px; cursor:pointer; transition:opacity .18s ease,transform .18s ease; }
+    button:hover:not(:disabled) { transform:translateY(-1px); }
+    button:disabled { cursor:not-allowed; opacity:.45; }
+    button.secondary { background:transparent; border-color:var(--rule); }
+    .message { min-height:24px; margin:0 0 16px; color:var(--soft); font-size:13px; }
+    .message.error { color:#ff8f8f; }
+    [hidden] { display:none !important; }
+    .dashboard { display:grid; gap:22px; }
+    .topline { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; padding:22px 0 18px; border-top:1px solid var(--rule); }
+    .ambassador-name { font-size:24px; letter-spacing:-.035em; }
+    .code-label { color:var(--soft); font:400 11px var(--mono); margin-top:4px; }
+    .referral { display:flex; align-items:center; gap:10px; padding:14px; border:1px solid var(--rule); border-radius:3px; }
+    .referral-copy { flex:1; min-width:0; }
+    .referral-link { display:block; overflow-wrap:anywhere; margin-top:5px; color:#ddd; font:400 12px/1.5 var(--mono); }
+    .referral button { flex:none; padding:9px 12px; font-size:12px; }
+    .perk { padding:18px 20px; border:1px solid rgba(59,82,255,.6); background:linear-gradient(115deg,rgba(59,82,255,.15),rgba(59,82,255,.025)); border-radius:3px; }
+    .perk strong { display:block; margin:5px 0 2px; font-weight:400; }
+    .perk p { margin:0; color:var(--soft); font-size:13px; }
+    .stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--rule); border-left:1px solid var(--rule); }
+    .stat { min-height:100px; padding:17px 18px; border-right:1px solid var(--rule); border-bottom:1px solid var(--rule); }
+    .stat-value { display:block; margin-top:13px; font-size:25px; letter-spacing:-.04em; }
+    .section-head { display:flex; justify-content:space-between; align-items:center; gap:16px; margin:25px 0 12px; }
+    h2 { margin:0; font-size:17px; font-weight:300; letter-spacing:-.02em; }
+    .table-wrap { overflow-x:auto; border-top:1px solid var(--rule); }
+    table { width:100%; border-collapse:collapse; min-width:620px; text-align:left; }
+    th { padding:12px 10px; color:var(--soft); font:400 10px var(--mono); text-transform:uppercase; letter-spacing:.07em; }
+    td { padding:14px 10px; border-top:1px solid var(--rule); color:#e7e7e7; font-size:13px; }
+    .money,.status { white-space:nowrap; }
+    .badge { display:inline-block; padding:4px 7px; border:1px solid var(--rule); border-radius:99px; color:#ddd; font-size:11px; }
+    .badge.paying,.badge.paid { border-color:rgba(96,208,144,.4); color:#90e1ae; }
+    .badge.pending { border-color:rgba(255,202,97,.4); color:#ffd786; }
+    .badge.approved,.badge.interviewed { border-color:rgba(123,144,255,.5); color:#aab7ff; }
+    .badge.rejected { color:#ff9a9a; border-color:rgba(255,120,120,.4); }
+    .empty { padding:18px 10px; color:var(--soft); font-size:13px; }
+    .claims { display:grid; gap:8px; }
+    .claim { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:14px; border:1px solid var(--rule); border-radius:3px; }
+    .claim-date,.claim-names { color:var(--soft); font-size:12px; }
+    .claim-names { margin-top:4px; }
+    .claim-right { display:flex; align-items:center; gap:12px; white-space:nowrap; }
+    .explainer { color:var(--soft); font-size:12px; margin:14px 0 0; }
+    @media (max-width:640px) {
+      .wrap { width:min(100% - 28px,1040px); }
+      header { height:62px; }
+      main { padding:44px 0 64px; }
+      .lookup { flex-direction:column; }
+      .lookup button { width:100%; }
+      .topline { align-items:flex-start; flex-direction:column; }
+      .referral { align-items:flex-start; }
+      .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .stat { min-height:88px; padding:14px; }
+      .stat-value { font-size:22px; }
+      .claim { align-items:flex-start; flex-direction:column; }
+      .claim-right { width:100%; justify-content:space-between; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><a class="brand" href="index.html">Vision</a></div></header>
+  <main class="wrap">
+    <div class="eyebrow">Ambassador program</div>
+    <h1>Your dashboard</h1>
+    <p class="intro">See how your referrals are doing, track monthly revenue, and claim the commissions you have earned.</p>
+    <form class="lookup" id="lookup-form">
+      <input id="code-input" name="code" type="text" placeholder="Your ambassador code" autocomplete="off" aria-label="Your ambassador code" required>
+      <button id="load-button" type="submit">View dashboard</button>
+    </form>
+    <p class="message" id="message" role="status" aria-live="polite"></p>
+    <section class="dashboard" id="dashboard" hidden aria-live="polite">
+      <div class="topline">
+        <div><div class="eyebrow">Ambassador</div><div class="ambassador-name" id="ambassador-name"></div><div class="code-label" id="ambassador-code"></div></div>
+      </div>
+      <div class="referral">
+        <div class="referral-copy"><div class="label">Your referral link</div><a class="referral-link" id="referral-link" target="_blank" rel="noopener noreferrer"></a></div>
+        <button class="secondary" id="copy-button" type="button">Copy</button>
+      </div>
+      <aside class="perk"><div class="label">Your ambassador perk</div><strong>Vision Max ($100/month) — free while you’re an active ambassador</strong><p>Thanks for helping more people discover Vision.</p></aside>
+      <div class="stats" id="stats"></div>
+      <section>
+        <div class="section-head"><h2>Your referrals</h2><button id="claim-button" type="button" disabled>Claim $0</button></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>First name</th><th>Status</th><th>Plan</th><th>Commission</th><th>Claim</th></tr></thead>
+          <tbody id="signup-rows"></tbody>
+        </table></div>
+        <p class="empty" id="signup-empty" hidden>No referrals yet. Your signups will appear here.</p>
+        <p class="explainer">You earn one month of what each client you refer actually pays. Free clients earn $0. Each client can be claimed once.</p>
+      </section>
+      <section>
+        <div class="section-head"><h2>Claim history</h2></div>
+        <div class="claims" id="claims-list"></div>
+        <p class="empty" id="claims-empty" hidden>No claims yet.</p>
+      </section>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const apiBase = (params.get('api') || window.location.origin).replace(/\/+$/, '');
+      const codeInput = document.getElementById('code-input');
+      const form = document.getElementById('lookup-form');
+      const loadButton = document.getElementById('load-button');
+      const message = document.getElementById('message');
+      const dashboard = document.getElementById('dashboard');
+      const claimButton = document.getElementById('claim-button');
+      let currentCode = '';
+      let currentView = null;
+
+      function money(value) {
+        const amount = Number(value) || 0;
+        return '$' + amount.toLocaleString(undefined, { minimumFractionDigits: amount % 1 ? 2 : 0, maximumFractionDigits: 2 });
+      }
+      function date(value) {
+        if (!value) return 'Date unavailable';
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? String(value) : parsed.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      }
+      function setMessage(text, isError) {
+        message.textContent = text || '';
+        message.classList.toggle('error', Boolean(isError));
+      }
+      function badge(text, className) {
+        const element = document.createElement('span');
+        element.className = 'badge' + (className ? ' ' + className : '');
+        element.textContent = text;
+        return element;
+      }
+      function addStat(parent, label, value) {
+        const tile = document.createElement('div');
+        tile.className = 'stat';
+        const title = document.createElement('div');
+        title.className = 'label';
+        title.textContent = label;
+        const amount = document.createElement('span');
+        amount.className = 'stat-value';
+        amount.textContent = value;
+        tile.append(title, amount);
+        parent.append(tile);
+      }
+      function planLabel(signup) {
+        if (signup.price == null) return 'Not priced yet';
+        if (signup.plan === 'free' || Number(signup.price) === 0) return 'Free';
+        if (signup.plan === 'max' || Number(signup.price) === 100) return 'Max · ' + money(signup.price) + '/mo';
+        if (signup.plan === 'vision') return 'Vision · ' + money(signup.price) + '/mo';
+        return money(signup.price) + '/mo';
+      }
+      function statusLabel(status) {
+        return status === 'paying' ? 'Paying' : status === 'interviewed' ? 'Interviewed' : 'Signed up';
+      }
+      function render(view) {
+        currentView = view;
+        document.getElementById('ambassador-name').textContent = view.name || 'Ambassador';
+        document.getElementById('ambassador-code').textContent = 'Code · ' + view.code;
+        const link = document.getElementById('referral-link');
+        link.href = view.link;
+        link.textContent = view.link;
+
+        const totals = view.totals || {};
+        const stats = document.getElementById('stats');
+        stats.replaceChildren();
+        [
+          ['Signups', String(totals.signups || 0)],
+          ['Interviewed', String(totals.interviewed || 0)],
+          ['Paying', String(totals.paying || 0)],
+          ['Monthly client revenue', money(totals.monthlyRevenue)],
+          ['Commission earned', money(totals.commissionEarned)],
+          ['Claimable now', money(totals.claimable)],
+          ['Pending', money(totals.pending)],
+          ['Approved', money(totals.approved)],
+          ['Paid', money(totals.paid)]
+        ].forEach((entry) => addStat(stats, entry[0], entry[1]));
+        claimButton.textContent = 'Claim ' + money(totals.claimable);
+        claimButton.disabled = !(Number(totals.claimable) > 0);
+
+        const rows = document.getElementById('signup-rows');
+        rows.replaceChildren();
+        const signups = Array.isArray(view.signups) ? view.signups : [];
+        document.getElementById('signup-empty').hidden = signups.length > 0;
+        signups.forEach((signup) => {
+          const row = document.createElement('tr');
+          const name = document.createElement('td'); name.textContent = signup.firstName || 'Someone'; row.append(name);
+          const statusCell = document.createElement('td');
+          const state = statusLabel(signup.status); statusCell.append(badge(state, signup.status)); row.append(statusCell);
+          const plan = document.createElement('td'); plan.textContent = planLabel(signup); row.append(plan);
+          const commission = document.createElement('td'); commission.className = 'money'; commission.textContent = money(signup.commission); row.append(commission);
+          const claim = document.createElement('td'); claim.className = 'status';
+          claim.append(signup.claimStatus ? badge(signup.claimStatus, signup.claimStatus) : document.createTextNode('—')); row.append(claim);
+          rows.append(row);
+        });
+
+        const claims = Array.isArray(view.claims) ? view.claims : [];
+        const claimsList = document.getElementById('claims-list');
+        claimsList.replaceChildren();
+        document.getElementById('claims-empty').hidden = claims.length > 0;
+        claims.forEach((claim) => {
+          const card = document.createElement('div'); card.className = 'claim';
+          const detail = document.createElement('div');
+          const created = document.createElement('div'); created.className = 'claim-date'; created.textContent = date(claim.createdAt); detail.append(created);
+          const names = document.createElement('div'); names.className = 'claim-names';
+          names.textContent = (claim.items || []).map((item) => item.firstName || 'Someone').join(', ') || 'No referral details'; detail.append(names);
+          const right = document.createElement('div'); right.className = 'claim-right';
+          const amount = document.createElement('strong'); amount.textContent = money(claim.amount); right.append(amount);
+          right.append(badge(claim.status || 'pending', claim.status || 'pending'));
+          card.append(detail, right); claimsList.append(card);
+        });
+        dashboard.hidden = false;
+      }
+      async function load(code) {
+        currentCode = code.trim();
+        if (!currentCode) { setMessage('Enter your ambassador code to continue.', true); return; }
+        loadButton.disabled = true;
+        claimButton.disabled = true;
+        setMessage('Loading your dashboard…');
+        try {
+          const query = new URLSearchParams({ code: currentCode });
+          const response = await fetch(apiBase + '/api/ambassador?' + query.toString(), { headers: { Accept: 'application/json' } });
+          const body = await response.json();
+          if (!response.ok) {
+            if (response.status === 404 || body.error === 'unknown_code') throw new Error('We couldn’t find that ambassador code. Check it and try again.');
+            throw new Error('Dashboard could not be loaded. Please try again.');
+          }
+          localStorage.setItem('vision-amb-code', currentCode);
+          render(body);
+          setMessage('Dashboard updated.');
+        } catch (error) {
+          setMessage(error instanceof TypeError ? 'Could not connect to the dashboard. Check your connection and try again.' : error.message, true);
+        } finally {
+          loadButton.disabled = false;
+        }
+      }
+      form.addEventListener('submit', (event) => { event.preventDefault(); load(codeInput.value); });
+      document.getElementById('copy-button').addEventListener('click', async () => {
+        if (!currentView || !currentView.link) return;
+        try {
+          await navigator.clipboard.writeText(currentView.link);
+          setMessage('Referral link copied.');
+        } catch (_) {
+          setMessage('Copy failed. Select and copy the referral link above.', true);
+        }
+      });
+      claimButton.addEventListener('click', async () => {
+        if (!currentCode || claimButton.disabled) return;
+        claimButton.disabled = true;
+        setMessage('Submitting your claim…');
+        try {
+          const response = await fetch(apiBase + '/api/ambassador/claims', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ code: currentCode })
+          });
+          const body = await response.json();
+          if (!response.ok) {
+            const errors = { already_claimed: 'These referrals have already been claimed.', nothing_to_claim: 'There is nothing available to claim right now.' };
+            throw new Error(errors[body.error] || 'Your claim could not be submitted. Please try again.');
+          }
+          await load(currentCode);
+          setMessage('Claim submitted. It is now pending review.');
+        } catch (error) {
+          setMessage(error instanceof TypeError ? 'Could not connect to the dashboard. Your claim was not confirmed.' : error.message, true);
+          if (currentView) claimButton.disabled = !(Number(currentView.totals && currentView.totals.claimable) > 0);
+        }
+      });
+
+      const initialCode = params.get('code') || localStorage.getItem('vision-amb-code') || '';
+      codeInput.value = initialCode;
+      if (initialCode) load(initialCode);
+    })();
+  </script>
+</body>
+</html>
