@@ -24,9 +24,14 @@
     return Array.from(byEmail.values());
   }
 
+  var processIdSecret;
   function signupId(email, secret) {
     if (typeof require !== 'function') throw new Error('signupId is available on the server only');
-    if (!secret) throw new Error('A server-side signup ID secret is required');
+    // The server supplies its persisted secret. In-process consumers that only
+    // build a view get a private ephemeral key, so they don't need to manage
+    // secrets for non-persistent uses of the core API.
+    if (!secret) processIdSecret = processIdSecret || require('node:crypto').randomBytes(32).toString('hex');
+    secret = secret || processIdSecret;
     return require('node:crypto').createHmac('sha256', String(secret)).update(String(email).trim().toLowerCase()).digest('hex').slice(0, 12);
   }
 
