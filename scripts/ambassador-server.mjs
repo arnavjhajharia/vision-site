@@ -1,0 +1,146 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import path from 'node:path';
+import http from 'node:http';
+import crypto from 'node:crypto';
+import { createRequire } from 'node:module';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const require = createRequire(import.meta.url);
+const Core = require(path.join(ROOT, 'ambassador-core.js'));
+const Interview = require(path.join(ROOT, 'interview-core.js'));
+const STATIC_FILES = new Set(['/ambassadors.html', '/ambassador-admin.html', '/ambassador-core.js']);
+
+function defaults(opts = {}) {
+  return {
+    host: opts.host || '127.0.0.1', port: opts.port ?? Number(process.env.PORT || 8787),
+    root: opts.root || ROOT,
+    waitlistFile: opts.waitlistFile || process.env.WAITLIST_FILE || path.resolve(ROOT, '..', 'personal-agent', 'data', 'waitlist.jsonl'),
+    billingFile: opts.billingFile || process.env.AMBASSADOR_BILLING_FILE || path.resolve(ROOT, '..', 'personal-agent', 'data', 'ambassador-billing.json'),
+    claimsFile: opts.claimsFile || process.env.AMBASSADOR_CLAIMS_FILE || path.join(ROOT, 'data', 'ambassador-claims.json'),
+    namesFile: opts.namesFile || path.join(ROOT, 'ambassadors.json'),
+    adminToken: opts.adminToken ?? process.env.ADMIN_TOKEN
+  };
+}
+
+function readJson(file, fallback) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (error) {
+    if (error.code === 'ENOENT') return fallback;
+    throw error;
+  }
+}
+
+function loadData(config) {
+  const lines = fs.existsSync(config.waitlistFile) ? fs.readFileSync(config.waitlistFile, 'utf8') : '';
+  const records = Core.mergeSignups(lines);
+  const billing = readJson(config.billingFile, {});
+  const claims = readJson(config.claimsFile, []);
+  const names = readJson(config.namesFile, {});
+  return { records, billing, claims, names };
+}
+
+function json(res, status, body) {
+  const text = JSON.stringify(body);
+  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': Buffer.byteLength(text), 'Cache-Control': 'no-store' });
+  res.end(text);
+}
+
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = []; let size = 0;
+    req.on('data', (chunk) => {
+      size += chunk.length;
+      if (size > 10 * 1024) { reject(Object.assign(new Error('body_too_large'), { status: 413 })); req.destroy(); return; }
+      chunks.push(chunk);
+    });
+    req.on('end', () => {
+      if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) return reject(Object.assign(new Error('invalid_content_type'), { status: 400 }));
+      try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')); }
+      catch (_) { reject(Object.assign(new Error('invalid_json'), { status: 400 })); }
+    });
+    req.on('error', reject);
+  });
+}
+
+function authorized(req, config) {
+  if (!config.adminToken) return { status: 503, error: 'admin_disabled' };
+  const supplied = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  const expectedBuffer = Buffer.from(String(config.adminToken));
+  const suppliedBuffer = Buffer.from(supplied);
+  if (suppliedBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(suppliedBuffer, expectedBuffer)) return { status: 401, error: 'unauthorized' };
+  return null;
+}
+
+function saveClaims(file, claims) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const temp = `${file}.${process.pid}.${crypto.randomBytes(6).toString('hex')}.tmp`;
+  fs.writeFileSync(temp, `${JSON.stringify(claims, null, 2)}\n`, { mode: 0o600 });
+  fs.renameSync(temp, file);
+}
+
+export function createServer(opts = {}) {
+  const config = defaults(opts);
+  const server = http.createServer(async (req, res) => {
+    const url = new URL(req.url, `http://${config.host}`);
+    const route = url.pathname;
+    try {
+      if (req.method === 'GET' && route === '/') {
+        res.writeHead(302, { Location: '/ambassadors.html' }); res.end(); return;
+      }
+      if (req.method === 'GET' && STATIC_FILES.has(route)) {
+        const file = path.join(config.root, route.slice(1));
+        if (!fs.existsSync(file) || !fs.statSync(file).isFile()) { res.writeHead(404); res.end('Not found'); return; }
+        const type = route.endsWith('.js') ? 'text/javascript; charset=utf-8' : 'text/html; charset=utf-8';
+        res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-store' }); fs.createReadStream(file).pipe(res); return;
+      }
+      if (req.method === 'GET' && route === '/api/ambassador') {
+        const code = Interview.normalizeRef(url.searchParams.get('code'));
+        const data = loadData(config);
+        if (!code || !Object.prototype.hasOwnProperty.call(data.names, code)) { json(res, 404, { error: 'unknown_code' }); return; }
+        json(res, 200, Core.ambassadorView(code, data.names, data.records, data.billing, data.claims)); return;
+      }
+      if (req.method === 'POST' && route === '/api/ambassador/claims') {
+        const body = await readBody(req); const code = Interview.normalizeRef(body.code);
+        const data = loadData(config);
+        if (!code || !Object.prototype.hasOwnProperty.call(data.names, code)) { json(res, 404, { error: 'unknown_code' }); return; }
+        const view = Core.ambassadorView(code, data.names, data.records, data.billing, data.claims);
+        try {
+          const claim = Core.createClaim(code, view, data.claims, body.signupIds, new Date().toISOString(), crypto.randomUUID());
+          data.claims.push(claim); saveClaims(config.claimsFile, data.claims); json(res, 201, { claim });
+        } catch (error) {
+          const status = error.code === 'nothing_to_claim' || error.code === 'already_claimed' || error.code === 'not_claimable' ? 400 : 500;
+          json(res, status, { error: error.code || 'claim_failed' });
+        }
+        return;
+      }
+      if (req.method === 'GET' && route === '/api/admin') {
+        const authError = authorized(req, config); if (authError) { json(res, authError.status, { error: authError.error }); return; }
+        const data = loadData(config); json(res, 200, Core.adminView(data.names, data.records, data.billing, data.claims)); return;
+      }
+      const adminClaim = route.match(/^\/api\/admin\/claims\/([^/]+)\/(approve|paid|reject)$/);
+      if (req.method === 'POST' && adminClaim) {
+        const authError = authorized(req, config); if (authError) { json(res, authError.status, { error: authError.error }); return; }
+        const data = loadData(config), index = data.claims.findIndex((claim) => claim.id === decodeURIComponent(adminClaim[1]));
+        if (index < 0) { json(res, 404, { error: 'unknown_claim' }); return; }
+        try {
+          data.claims[index] = Core.transition(data.claims[index], adminClaim[2], new Date().toISOString());
+          saveClaims(config.claimsFile, data.claims); json(res, 200, { claim: data.claims[index] });
+        } catch (error) { json(res, error.code === 'bad_transition' ? 409 : 500, { error: error.code || 'transition_failed' }); }
+        return;
+      }
+      json(res, 404, { error: 'not_found' });
+    } catch (error) {
+      if (!res.headersSent) json(res, error.status || 500, { error: error.status ? error.message : 'server_error' });
+      else res.destroy();
+    }
+  });
+  return server;
+}
+
+const isMain = process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url;
+if (isMain) {
+  const config = defaults();
+  const server = createServer(config);
+  server.listen(config.port, config.host, () => console.log(`Ambassador dashboard: http://${config.host}:${server.address().port}/ambassadors.html`));
+}
