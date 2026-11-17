@@ -28,6 +28,12 @@ Sync refreshes module names and descriptions but never overwrites a `status` or 
 New modules go to the manifest's `category` if valid, else `--category <id>` (default `productivity`). New modules start as
 `building`; modules that disappear are kept with `"removed": true` (hidden on the page).
 
+## Pricing
+
+$1 to $20 a month, or $100/month for custom features. The landing letter and the Features tab (`#pricing` block) both
+show this line, plus two tiers: **Vision** ($1–$20/month, priced by usage via the interview quote) and **Custom**
+($100/month: everything in Vision plus bespoke features built on request).
+
 ## Waitlist interview (chat with Vision)
 
 After signup, Vision runs a 5-question chat interview and shows a price quote. All copy (greeting, per-answer

@@ -155,6 +155,7 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
 .grp .rows{margin-top:14px;border-top:1px solid var(--rule)}
 .fi .a{font:400 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin-left:8px;white-space:nowrap}
 .feat footer{margin-top:56px}
+.pricing{margin-top:32px}.pricing h3{font:400 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-bottom:10px;border-bottom:1px solid var(--rule)}.pricing .pl{margin-top:14px;color:var(--soft);font-size:15px;line-height:1.6}.tiers{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.tier{padding:18px 20px;border:1px solid var(--rule);border-radius:2px}.tier.top{border-color:var(--glow);border-left-width:2px}.tier .tn{font:400 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}.tier .tp{margin-top:8px;font-family:var(--pixel);font-weight:500;font-size:clamp(22px,2.6vw,30px)}.tier .tp small{font:400 13px var(--sans);color:var(--dim)}.tier p{margin-top:10px;color:var(--soft);font-size:14px;line-height:1.6}
 @media (max-width:560px){.fi{grid-template-columns:1fr}.badge{grid-column:1;grid-row:auto;order:-1;padding:0 0 4px}.fi .n{font-size:16px}}
 .ico{display:inline-block;width:1em;height:1em;flex:none;vertical-align:-.14em}
 .hero-in{display:flex;flex-direction:column;align-items:center}
@@ -185,6 +186,7 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
       <span class="l">Nothing leaves your hands without your approval.</span>
       <span class="l">One agent, on your Mac, your phone and your wrist.</span>
       <span class="l">Intelligence should work for you, on your terms.</span>
+      <span class="l">$1 to $20 a month, or $100/month for custom features.</span>
       <span class="l dim">More soon.</span>
       <form class="wl" id="wl" novalidate>
         <label for="wl-email">Join the waitlist</label>
@@ -209,6 +211,14 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
     <p class="big">Vision sits in WhatsApp and Telegram and takes the busywork off your plate: it triages your email, runs your calendar, ships code and makes sure reminders actually ring. It remembers every conversation, so you never repeat yourself. And it never sends, posts or books anything outward until you say OK.</p>
   </div>
   <p class="lede">Everything Vision does today, what we're building, and what's next. Essential is in every Vision; add the other two as you need them.</p>
+  <div class="pricing" id="pricing" aria-labelledby="price-h">
+    <h3 id="price-h">Pricing</h3>
+    <p class="pl">$1 to $20 a month, or $100/month for custom features.</p>
+    <div class="tiers">
+      <div class="tier"><div class="tn">Vision</div><div class="tp">$1&ndash;$20<small> / month</small></div><p>Priced by how you use it. Every plan includes Essential; add Productivity and Builder as you need them.</p></div>
+      <div class="tier top"><div class="tn">Custom</div><div class="tp">$100<small> / month</small></div><p>Everything in Vision, plus bespoke features built for you. Tell us what you need and we build it into your Vision.</p></div>
+    </div>
+  </div>
   <div class="counts" id="feat-counts" role="group" aria-label="Filter by status"></div>
   <div id="feat-list"><p class="empty">Loading features…</p></div>
   <div class="about mini" aria-label="What Vision is">
