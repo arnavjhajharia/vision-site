@@ -158,7 +158,8 @@ footer{flex:none;height:40px;display:flex;align-items:center;justify-content:cen
   if(urlRef)setRef(urlRef);
   var refNow=urlRef||VI.normalizeRef(getRef());
   var AMB=null,FEAT=null;
-  fetch('ambassadors.json').then(function(r){return r.json()}).then(function(j){AMB=j}).catch(function(){});
+  // Typed referrals are only accepted when they match ambassadors.json, so refAnswer waits for this to settle.
+  var ambReady=fetch('ambassadors.json').then(function(r){return r.json()}).then(function(j){AMB=j&&typeof j==='object'?j:null}).catch(function(){AMB=null});
   fetch('features.json',{cache:'no-cache'}).then(function(r){return r.json()}).then(function(j){FEAT=j}).catch(function(){});
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var hover=window.matchMedia&&matchMedia('(hover: hover)').matches;
@@ -236,7 +237,8 @@ footer{flex:none;height:40px;display:flex;align-items:center;justify-content:cen
   function landText(t){
     var k=VI.landingTopic(t);
     if(k==='email')return gotEmail(t);
-    if(L.mode==='email'&&t.indexOf('@')>=0){S.busy=true;bubble('u',t);say(["That doesn't look like an email. Try again?"],function(){S.busy=false});return}
+    // Asked for the email: anything that isn't an email or a real question gets the email question again.
+    if(L.mode==='email'&&(!k||k==='join')){S.busy=true;bubble('u',t);say(["That doesn't look like an email. Try again?"],function(){S.busy=false;landChips()});return}
     topic(k,t);
   }
   function gotEmail(v){
@@ -247,8 +249,11 @@ footer{flex:none;height:40px;display:flex;align-items:center;justify-content:cen
   }
   function refAnswer(t,said){
     S.busy=true;bubble('u',said);U.chips.textContent='';
-    var r=t?VI.refFromText(t,AMB):'';if(r){refNow=r;setRef(r)}
-    signup();
+    // Only a code found in ambassadors.json is used and remembered; anything else signs up without a referral.
+    ambReady.then(function(){
+      var r=t?VI.refFromText(t,AMB):'';if(r){refNow=r;setRef(r)}
+      signup();
+    });
   }
   function signup(){
     L.mode='signing';S.busy=true;U.say.hidden=true;

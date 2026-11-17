@@ -92,12 +92,34 @@ test('isEmail', () => {
   assert.ok(!VI.isEmail(null));
 });
 
-test('refFromText: codes, @codes and ambassador names become normalized codes', () => {
+test('landingTopic: keywords match whole words only', () => {
+  assert.equal(VI.landingTopic("I'm a freelancer"), '');
+  assert.equal(VI.landingTopic('I am building a startup'), '');
+  assert.equal(VI.landingTopic('that was helpful'), '');
+  assert.equal(VI.landingTopic('is it free?'), 'pricing');
+  assert.equal(VI.landingTopic('what are the prices'), 'pricing');
+  assert.equal(VI.landingTopic('list the features'), 'features');
+  assert.equal(VI.landingTopic('can it build apps'), 'coding');
+  assert.equal(VI.landingTopic('does it do reminders'), 'features');
+});
+
+test('refFromText: known codes, @codes and ambassador names become codes', () => {
   assert.equal(VI.refFromText('manya', AMB), 'manya');
   assert.equal(VI.refFromText('@Manya', AMB), 'manya');
-  assert.equal(VI.refFromText('MANYA', AMB), 'manya');
-  assert.equal(VI.refFromText('John Doe', AMB), 'john-doe');
-  assert.equal(VI.refFromText('<script>', AMB), '');
-  assert.equal(VI.refFromText('', AMB), '');
-  assert.equal(VI.refFromText('x'.repeat(40)), '');
+  assert.equal(VI.refFromText(' MANYA. ', AMB), 'manya');
+  assert.equal(VI.refFromText('Rahul Shah', { rs1: 'Rahul Shah' }), 'rs1');
+  assert.equal(VI.refFromText('rahul  shah', { rs1: 'Rahul Shah' }), 'rs1');
+});
+
+test('refFromText: negatives, free text and unknown codes give no referral', () => {
+  for (const t of ['no', 'No.', 'nope', 'none', 'nobody', 'no one', 'No One!', 'skip', 'n/a', 'a friend', 'John Doe', 'ghost', '<script>', '', 'x'.repeat(40)]) {
+    assert.equal(VI.refFromText(t, AMB), '', t);
+  }
+  assert.equal(VI.refFromText('constructor', AMB), '');
+  assert.equal(VI.refFromText('toString', AMB), '');
+});
+
+test('refFromText: nothing is accepted before ambassadors.json loads', () => {
+  assert.equal(VI.refFromText('manya', null), '');
+  assert.equal(VI.refFromText('manya'), '');
 });

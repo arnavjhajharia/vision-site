@@ -107,9 +107,14 @@
     { id: 'coding', label: 'Coding', match: ['code', 'coding', 'pull request', 'claude', 'codex', 'cursor', 'repo', 'build', 'developer'] },
     { id: 'safety', label: 'Is it safe?', match: ['safe', 'privacy', 'private', 'secure', 'security', 'approve', 'trust', 'my data'] },
     { id: 'join', label: 'Join waitlist', match: ['join', 'waitlist', 'sign up', 'signup', 'sign me', 'early access', 'get access', 'yes', 'count me in'] },
-    { id: 'features', label: 'What can it do?', match: ['what can', 'what does', 'feature', 'do for me', 'help', 'what is', 'about', 'how does', 'tell me', 'whatsapp', 'telegram', 'email', 'calendar', 'remind', 'memory'] }
+    { id: 'features', label: 'What can it do?', match: ['what can', 'what does', 'feature', 'do for me', 'help', 'what is', 'about', 'how does', 'tell me', 'whatsapp', 'telegram', 'email', 'calendar', 'reminder', 'remind', 'memory'] }
   ];
   var CHIP_ORDER = ['features', 'pricing', 'custom', 'join'];
+
+  // Whole-word (or whole-phrase) match, allowing a plural 's': 'free' hits "is it free" but not "freelancer".
+  function word(text, kw) {
+    return new RegExp('(^|[^a-z0-9])' + esc(String(kw).toLowerCase()) + 's?($|[^a-z0-9])', 'i').test(text);
+  }
 
   function isEmail(s) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(s == null ? '' : s).trim()); }
 
@@ -122,7 +127,7 @@
       var t = TOPICS[i];
       for (var j = 0; j < t.match.length; j++) {
         var kw = t.match[j];
-        if (kw === '$' ? text.indexOf('$') >= 0 : hit(text, kw)) return t.id;
+        if (kw === '$' ? text.indexOf('$') >= 0 : word(text, kw)) return t.id;
       }
     }
     return '';
@@ -207,14 +212,19 @@
     return lines[Math.max(0, (n || 1) - 1) % lines.length];
   }
 
-  // "Who invited you?" answer -> referral code. Accepts a code, "@code", or an ambassador's name from ambassadors.json.
+  // "Who invited you?" answer -> referral code, or '' (skip). Only codes listed in ambassadors.json count: the typed
+  // answer must be a known code ("manya", "@manya") or an ambassador's name ("Manya"). Negatives ("no one", "skip"),
+  // free text ("a friend") and anything typed before ambassadors.json loaded (ambassadors null) give ''.
+  var NO_REF = /^(no|nope|none|nobody|no one|noone|nah|n\/a|na|skip|nothing|-)$/;
   function refFromText(raw, ambassadors) {
-    var s = String(raw == null ? '' : raw).trim().replace(/^@/, '');
+    var s = String(raw == null ? '' : raw).trim().replace(/^@/, '').replace(/[.!]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+    if (!s || NO_REF.test(s) || !ambassadors) return '';
     var direct = normalizeRef(s);
-    if (direct && (!ambassadors || ambassadors[direct] || !/\s/.test(s))) return direct;
-    var low = s.toLowerCase();
-    for (var code in ambassadors || {}) if (String(ambassadors[code]).toLowerCase() === low) return normalizeRef(code);
-    return normalizeRef(s.replace(/\s+/g, '-'));
+    if (direct && Object.prototype.hasOwnProperty.call(ambassadors, direct)) return direct;
+    for (var code in ambassadors) {
+      if (Object.prototype.hasOwnProperty.call(ambassadors, code) && String(ambassadors[code]).trim().toLowerCase() === s) return normalizeRef(code);
+    }
+    return '';
   }
 
   var api = { fill: fill, variantFor: variantFor, resolve: resolve, matchText: matchText, reaction: reaction, firstOpen: firstOpen, joinAnd: joinAnd, normalizeRef: normalizeRef,
