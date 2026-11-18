@@ -1,4 +1,4 @@
-/* Vision waitlist interview: pure logic shared by the chat UI (index.html) and the tests (tests/).
+/* Lucy waitlist interview: pure logic shared by the chat UI (index.html) and the tests (tests/).
    Branch picking mirrors personal-agent src/features/waitlist/interview.js (variantFor / resolveQuestion):
    the first variant whose "when" matches EARLIER answers rewords a question; option ids never change. */
 (function (root) {
@@ -22,7 +22,7 @@
     return null;
   }
 
-  // The question as Vision asks it, given what was answered so far.
+  // The question as Lucy asks it, given what was answered so far.
   function resolve(q, answers) {
     var v = variantFor(q, answers) || {}, react = {}, k;
     for (k in q.react || {}) react[k] = q.react[k];
@@ -74,7 +74,7 @@
     return { ids: other ? [other.id] : [], note: note };
   }
 
-  // Vision's one-line reaction to an answer. rand() is injectable for tests.
+  // Lucy's one-line reaction to an answer. rand() is injectable for tests.
   function reaction(rq, value, note, rand) {
     rand = rand || Math.random;
     var ids = list(value), pickOne = function (x) { x = list(x); return x.length ? x[Math.floor(rand() * x.length) % x.length] : ''; };
