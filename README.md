@@ -1,6 +1,8 @@
-# Vision site
+# Lucy site
 
-Landing page for Vision, served by GitHub Pages from `main`.
+Landing page for Lucy (With Lucy), served by GitHub Pages from `main` at https://withlucy.ai.
+
+The `CNAME` file pins the custom domain `withlucy.ai`; keep it in the repo or GitHub Pages drops the domain.
 
 ## Features tab
 
@@ -16,7 +18,7 @@ and `essential: true/false`. `area` is a small sub-label shown next to the featu
 
 `status` is `live`, `building` or `planned`. Counts on the page are computed from this file.
 
-Public Vision modules are synced from their manifests:
+Public Lucy modules (repo `public-vision`) are synced from their manifests:
 
 ```sh
 node scripts/sync-features.mjs                      # reads ../public-vision/modules/*/manifest.json
@@ -30,13 +32,13 @@ New modules go to the manifest's `category` if valid, else `--category <id>` (de
 
 ## Pricing
 
-Vision is **free**. **Vision Max** is $100/month for bespoke features — or free if you convince Vision you're worth it
+Lucy is **free**. **Lucy Max** is $100/month for bespoke features — or free if you convince Lucy you're worth it
 (ambassadors get Max free while active). The landing letter and the Features tab (`#pricing`) show both tiers. The
-waitlist interview is onboarding only (always quotes $0 for Vision).
+waitlist interview is onboarding only (always quotes $0 for Lucy).
 
-## Waitlist interview (chat with Vision)
+## Waitlist interview (chat with Lucy)
 
-After signup, Vision runs a 5-question chat interview and shows a price quote. All copy (greeting, per-answer
+After signup, Lucy runs a 5-question chat interview and shows a price quote. All copy (greeting, per-answer
 reactions, branches, chip labels, free-text matching) lives in personal-agent `data/waitlist-interview.json`; the
 page fetches it at signup, so editing that file changes the chat without touching this repo. `interview-core.js` is
 the pure logic (branch picking, typed-answer matching, reactions); `node --test tests/` runs its tests (uses the real
@@ -44,7 +46,7 @@ config when personal-agent is checked out next to this repo).
 
 ## Ambassador referrals
 
-Ambassador links look like `https://arnavjhajharia.github.io/vision-site/?ref=manya`. The page keeps the code in
+Ambassador links look like `https://withlucy.ai/?ref=manya`. The page keeps the code in
 localStorage (`vision-wl-ref`), prefills the optional "Who invited you?" field and sends it with the signup. The server
 stores it on the waitlist record (first referral wins). Codes are listed in `ambassadors.json` (code -> name).
 
