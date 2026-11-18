@@ -1,7 +1,7 @@
 {
   "updated": "2026-11-17",
   "statuses": {
-    "live": "Running today in the Vision harness.",
+    "live": "Running today in the Lucy harness.",
     "building": "In active development.",
     "planned": "On the roadmap."
   },
@@ -9,7 +9,7 @@
     {
       "id": "essential",
       "name": "Essential",
-      "tagline": "The core every Vision gets: your chats, email, calendar, reminders, memory and the safety rails.",
+      "tagline": "The core every Lucy gets: your chats, email, calendar, reminders, memory and the safety rails.",
       "essential": true
     },
     {
@@ -33,7 +33,7 @@
       "area": "Messaging",
       "status": "live",
       "source": "manual",
-      "description": "Chat with Vision on its own WhatsApp number, in DMs and groups. Telegram works too."
+      "description": "Chat with Lucy on her own WhatsApp number, in DMs and groups. Telegram works too."
     },
     {
       "id": "per-chat-permissions",
@@ -87,7 +87,7 @@
       "area": "Memory",
       "status": "live",
       "source": "manual",
-      "description": "In chats you turn on, Vision keeps running notes: decisions, deadlines, action items and open questions."
+      "description": "In chats you turn on, Lucy keeps running notes: decisions, deadlines, action items and open questions."
     },
     {
       "id": "reminders",
@@ -96,7 +96,7 @@
       "area": "Planning",
       "status": "live",
       "source": "manual",
-      "description": "Natural-language reminders ('fri 5pm', '+30m') with nagging, a watchdog and an Apple Reminders mirror so they ring even if Vision is down."
+      "description": "Natural-language reminders ('fri 5pm', '+30m') with nagging, a watchdog and an Apple Reminders mirror so they ring even if Lucy is down."
     },
     {
       "id": "followups",
@@ -114,7 +114,7 @@
       "area": "Planning",
       "status": "live",
       "source": "manual",
-      "description": "Everything Vision promised or was asked to do, across every chat, in one task list."
+      "description": "Everything Lucy promised or was asked to do, across every chat, in one task list."
     },
     {
       "id": "calendar",
@@ -150,7 +150,7 @@
       "area": "Trust & safety",
       "status": "live",
       "source": "manual",
-      "description": "Passwords go in through a one-time link, never through chat. Vision can use them without ever seeing them."
+      "description": "Passwords go in through a one-time link, never through chat. Lucy can use them without ever seeing them."
     },
     {
       "id": "dashboard",
@@ -159,7 +159,7 @@
       "area": "Apps",
       "status": "live",
       "source": "manual",
-      "description": "A private web dashboard for jobs, reminders, memory and earnings, with 'tell Vision' built in."
+      "description": "A private web dashboard for jobs, reminders, memory and earnings, with 'tell Lucy' built in."
     },
     {
       "id": "kill-switch",
@@ -174,7 +174,7 @@
       "id": "desktop-web-app",
       "name": "Desktop and web app",
       "category": "essential",
-      "area": "Public Vision",
+      "area": "Public Lucy",
       "status": "building",
       "source": "manual",
       "description": "A chat app with module panels, for Mac and the browser."
@@ -183,7 +183,7 @@
       "id": "one-click-install",
       "name": "One-click install",
       "category": "essential",
-      "area": "Public Vision",
+      "area": "Public Lucy",
       "status": "planned",
       "source": "manual",
       "description": "Download, sign in, link WhatsApp and go. No terminal needed."
@@ -249,7 +249,7 @@
       "area": "Voice",
       "status": "building",
       "source": "manual",
-      "description": "Talk to Vision and hear answers through an Echo speaker."
+      "description": "Talk to Lucy and hear answers through an Echo speaker."
     },
     {
       "id": "voice-bed",
@@ -258,7 +258,7 @@
       "area": "Voice",
       "status": "building",
       "source": "manual",
-      "description": "Hold to talk in the browser; Vision answers in your chat and out loud."
+      "description": "Hold to talk in the browser; Lucy answers in your chat and out loud."
     },
     {
       "id": "people-graph",
@@ -294,7 +294,7 @@
       "area": "Messaging",
       "status": "live",
       "source": "manual",
-      "description": "Vision drafts messages from your own number; you get the exact text and reply 'send' to release it."
+      "description": "Lucy drafts messages from your own number; you get the exact text and reply 'send' to release it."
     },
     {
       "id": "focus",
@@ -303,7 +303,7 @@
       "area": "Focus",
       "status": "live",
       "source": "manual",
-      "description": "Commit to 1 to 3 tasks; Vision holds you to them and blocks distracting Mac apps until you're done."
+      "description": "Commit to 1 to 3 tasks; Lucy holds you to them and blocks distracting Mac apps until you're done."
     },
     {
       "id": "breaks",
@@ -312,7 +312,7 @@
       "area": "Focus",
       "status": "live",
       "source": "manual",
-      "description": "Take a real break: Vision holds new work until you're back."
+      "description": "Take a real break: Lucy holds new work until you're back."
     },
     {
       "id": "health",
@@ -330,7 +330,7 @@
       "area": "Apps",
       "status": "building",
       "source": "manual",
-      "description": "A small watch app that syncs activity to Vision."
+      "description": "A small watch app that syncs activity to Lucy."
     },
     {
       "id": "mac-app",
@@ -339,7 +339,7 @@
       "area": "Apps",
       "status": "building",
       "source": "manual",
-      "description": "A native Mac app to see and steer Vision from the menu bar."
+      "description": "A native Mac app to see and steer Lucy from the menu bar."
     },
     {
       "id": "module:canvas-learning",
@@ -366,7 +366,7 @@
       "area": "Messaging",
       "status": "live",
       "source": "manual",
-      "description": "In client chats Vision answers status questions in plain English, with no internals."
+      "description": "In client chats Lucy answers status questions in plain English, with no internals."
     },
     {
       "id": "multi-engine",
@@ -384,7 +384,7 @@
       "area": "Coding",
       "status": "live",
       "source": "manual",
-      "description": "Describe a change; Vision plans it, splits it across parallel agents on their own branches, reviews and opens a pull request."
+      "description": "Describe a change; Lucy plans it, splits it across parallel agents on their own branches, reviews and opens a pull request."
     },
     {
       "id": "background-jobs",
@@ -460,30 +460,30 @@
     },
     {
       "id": "modular-builder",
-      "name": "Build your own Vision",
+      "name": "Build your own Lucy",
       "category": "builder",
-      "area": "Public Vision",
+      "area": "Public Lucy",
       "status": "building",
       "source": "manual",
-      "description": "Pick what you want Vision for, and the app assembles itself with only those modules."
+      "description": "Pick what you want Lucy for, and the app assembles itself with only those modules."
     },
     {
       "id": "module-store",
       "name": "Module catalog",
       "category": "builder",
-      "area": "Public Vision",
+      "area": "Public Lucy",
       "status": "planned",
       "source": "manual",
-      "description": "Browse and add community modules to your Vision."
+      "description": "Browse and add community modules to your Lucy."
     },
     {
       "id": "hosted",
-      "name": "Hosted Vision",
+      "name": "Hosted Lucy",
       "category": "builder",
-      "area": "Public Vision",
+      "area": "Public Lucy",
       "status": "planned",
       "source": "manual",
-      "description": "Run Vision in the cloud instead of on your own Mac."
+      "description": "Run Lucy in the cloud instead of on your own Mac."
     },
     {
       "id": "module:coding",
