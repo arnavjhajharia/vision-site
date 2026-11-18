@@ -39,7 +39,7 @@ test('typed answers map to chips via ranges and keywords', opt, () => {
   assert.deepEqual(r('hours', 'honestly 15+'), ['10+']);
   assert.deepEqual(r('hours', 'barely any'), ['0-2']);
   assert.deepEqual(r('tools', 'maybe 4'), ['3-5']);
-  assert.deepEqual(r('pay', '$12'), ['10-20']);
+  assert.deepEqual(r('pay', 'vision max 100'), ['20+']);
   assert.deepEqual(r('custom', 'not sure yet'), ['maybe']);
   assert.deepEqual(r('custom', 'no thanks'), ['no']);
   assert.deepEqual(r('custom', 'yeah!'), ['yes']);
