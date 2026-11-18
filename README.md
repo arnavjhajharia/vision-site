@@ -30,9 +30,8 @@ New modules go to the manifest's `category` if valid, else `--category <id>` (de
 
 ## Pricing
 
-$1 to $20 a month, or $100/month for custom features. The landing letter and the Features tab (`#pricing` block) both
-show this line, plus two tiers: **Vision** ($1–$20/month, priced by usage via the interview quote) and **Custom**
-($100/month: everything in Vision plus bespoke features built on request).
+Vision is **free**. **Vision Max** is $100/month for bespoke features. The landing letter and the Features tab
+(`#pricing` block) show both tiers. The waitlist interview is onboarding only (always quotes $0 for Vision).
 
 ## Waitlist interview (chat with Vision)
 
