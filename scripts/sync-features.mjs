@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Regenerate features.json from Public Vision module manifests.
+// Regenerate features.json from Public Lucy module manifests (public-vision repo).
 //
 //   node scripts/sync-features.mjs [--repo ../public-vision] [--ref <git ref>] [--dry]
 //
