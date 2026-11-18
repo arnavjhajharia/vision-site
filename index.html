@@ -189,7 +189,7 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
       <span class="l">Nothing leaves your hands without your approval.</span>
       <span class="l">One agent, on your Mac, your phone and your wrist.</span>
       <span class="l">Intelligence should work for you, on your terms.</span>
-      <span class="l">Vision is free. Vision Max is $100/month for bespoke features.</span>
+      <span class="l">Vision is free. Vision Max is $100/month — or free if you convince Vision you're worth it.</span>
       <span class="l dim">More soon.</span>
       <form class="wl" id="wl" novalidate>
         <label for="wl-email">Join the waitlist</label>
@@ -220,10 +220,10 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
   <p class="lede">Everything Vision does today, what we're building, and what's next. Essential is in every Vision; add the other two as you need them.</p>
   <div class="pricing" id="pricing" aria-labelledby="price-h">
     <h3 id="price-h">Pricing</h3>
-    <p class="pl">Vision is free. Vision Max is $100/month for bespoke features.</p>
+    <p class="pl">Vision is free. Vision Max is $100/month for bespoke features — or free if you convince Vision you're worth it.</p>
     <div class="tiers">
       <div class="tier top"><div class="tn">Vision</div><div class="tp">Free</div><p>Full assistant in your chats — Essential, Productivity and Builder. Join the waitlist, no card.</p></div>
-      <div class="tier top"><div class="tn">Vision Max</div><div class="tp">$100<small> / month</small></div><p>Everything in Vision, plus bespoke features built for you. Tell us what you need and we build it into your Vision.</p></div>
+      <div class="tier top"><div class="tn">Vision Max</div><div class="tp">$100<small> / month</small></div><p>Everything in Vision, plus bespoke features built for you. $100/mo — or free if you convince Vision you're worth it (ambassadors get Max free while they're active).</p></div>
     </div>
   </div>
   <div class="counts" id="feat-counts" role="group" aria-label="Filter by status"></div>
@@ -435,9 +435,10 @@ html:not(.js) .hero{position:relative}html:not(.js) .pin{position:static}html:no
     S.busy=true;
     post('/interview',{email:S.email,token:S.token,answers:payload()}).then(function(r){
       var q=r.quote,card=el('div','b v quote');
-      var p=el('div','price',money(q.monthly));p.appendChild(el('small',null,' '+C('perMonth','/ month')));card.appendChild(p);
-      card.appendChild(el('div','sub',VI.fill(C('yearly','or {yearly} / year'),{yearly:money(q.yearly)})));
-      if(q.powerTierCandidate)card.appendChild(el('div','pow',VI.fill(C('power','Power tier: {power}/mo.'),{power:money(q.powerTierMonthly)})));
+      var p=el('div','price',q.monthly===0?'Free':money(q.monthly));if(q.monthly!==0)p.appendChild(el('small',null,' '+C('perMonth','/ month')));card.appendChild(p);
+      if(q.monthly!==0)card.appendChild(el('div','sub',VI.fill(C('yearly','or {yearly} / year'),{yearly:money(q.yearly)})));
+      card.appendChild(el('div','pow',VI.fill(C('maxNote','Vision Max is {power}/mo for bespoke features — or free if you convince me you are worth it.'),{power:money(q.powerTierMonthly||100)})));
+      if(q.powerTierCandidate)card.appendChild(el('div','pow',VI.fill(C('power','You look like a Vision Max fit ({power}/mo). We still decide if you get Max for free.'),{power:money(q.powerTierMonthly)})));
       card.appendChild(el('div','fine',C('fine','This is a quote, not a charge.')));
       clearDraft();S.busy=false;
       say([C('thanks',S.cfg.thanks||"Thanks! You're on the list."),{node:card,text:'..........................'}]);

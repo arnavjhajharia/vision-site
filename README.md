@@ -30,8 +30,9 @@ New modules go to the manifest's `category` if valid, else `--category <id>` (de
 
 ## Pricing
 
-Vision is **free**. **Vision Max** is $100/month for bespoke features. The landing letter and the Features tab
-(`#pricing` block) show both tiers. The waitlist interview is onboarding only (always quotes $0 for Vision).
+Vision is **free**. **Vision Max** is $100/month for bespoke features — or free if you convince Vision you're worth it
+(ambassadors get Max free while active). The landing letter and the Features tab (`#pricing`) show both tiers. The
+waitlist interview is onboarding only (always quotes $0 for Vision).
 
 ## Waitlist interview (chat with Vision)
 
