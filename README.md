@@ -4,6 +4,10 @@ Landing page for Lucy (With Lucy), served by GitHub Pages from `main` at https:/
 
 The `CNAME` file pins the custom domain `withlucy.ai`; keep it in the repo or GitHub Pages drops the domain.
 
+## Lucy
+
+[`lucy.html`](lucy.html) is the standalone page for **Lucy**, the consumer WhatsApp life admin product ([withlucy.com](https://withlucy.com)). It is deliberately omitted from `features.json`, which lists Vision-only capabilities for the Features tab and `sync-features.mjs`. Styling reuses the same CSS custom properties as `index.html` (`--bg`, `--ink`, `--glow`, and the rest).
+
 ## Features tab
 
 `features.json` is the single source of truth for the Features section. Each new feature is one entry:
