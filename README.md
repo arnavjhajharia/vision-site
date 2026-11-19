@@ -4,6 +4,24 @@ Landing page for Lucy (With Lucy), served by GitHub Pages from `main` at https:/
 
 The `CNAME` file pins the custom domain `withlucy.ai`; keep it in the repo or GitHub Pages drops the domain.
 
+## Preview and design rules
+
+```sh
+python3 -m http.server 4732   # then open http://localhost:4732
+node --test tests/
+```
+
+`index.html` follows five rules. Keep them when editing:
+
+1. One idea per screen.
+2. Show the chat, not a drawing of the product. Each chat has a `data-shot` name (`dm`, `group`, `approve`, `memory`) so a real capture can replace it.
+3. One typeface (Inter), one ink, paper background. No gradients, glows or decoration. The only colour is inside the chats.
+4. Every sentence is one you could say out loud to a friend.
+5. One action: join the waitlist. Everything else is a link.
+
+The full feature list is the closed "Everything Lucy does" line at the bottom, rendered from `features.json`.
+Before and after screenshots: `docs/screenshots/redesign/`.
+
 ## Lucy
 
 [`lucy.html`](lucy.html) is the standalone page for **Lucy**, the consumer WhatsApp life admin product ([withlucy.com](https://withlucy.com)). It is deliberately omitted from `features.json`, which lists Vision-only capabilities for the Features tab and `sync-features.mjs`. Styling reuses the same CSS custom properties as `index.html` (`--bg`, `--ink`, `--glow`, and the rest).
