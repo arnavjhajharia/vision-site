@@ -2,6 +2,10 @@
 
 Landing page for Vision, served by GitHub Pages from `main`.
 
+## Lucy
+
+[`lucy.html`](lucy.html) is the standalone page for **Lucy**, the consumer WhatsApp life admin product ([withlucy.com](https://withlucy.com)). It is deliberately omitted from `features.json`, which lists Vision-only capabilities for the Features tab and `sync-features.mjs`. Styling reuses the same CSS custom properties as `index.html` (`--bg`, `--ink`, `--glow`, and the rest).
+
 ## Features tab
 
 `features.json` is the single source of truth for the Features section. Each new feature is one entry:
