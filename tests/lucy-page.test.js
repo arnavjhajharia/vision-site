@@ -30,18 +30,26 @@ test('lucy.html: page, copy, links, theme, and index nav', () => {
   assert.match(lucy, /href="index\.html"/);
   assert.match(lucy, /https:\/\/withlucy\.com/);
 
-  for (const v of ['--bg', '--ink', '--glow']) {
-    assert.equal(readCssVar(lucy, v), readCssVar(index, v), `${v} should match index.html`);
-  }
+  // Redesign: index.html is now the one Lucy page (paper and ink, no nav tabs). lucy.html is kept but no longer
+  // linked from it or themed to match, until it is retired or redirected.
+  for (const v of ['--bg', '--ink']) readCssVar(index, v);
+  assert.doesNotMatch(index, /href="lucy\.html"/);
 
-  assert.match(index, /href="lucy\.html"/);
-
-  const list = features.features || features;
-  const feats = Array.isArray(list) ? list : [];
-  for (const f of feats) {
-    assert.doesNotMatch(String(f.id || ''), /lucy/i, 'features.json id should not mention lucy');
-    assert.doesNotMatch(String(f.name || ''), /lucy/i, 'features.json name should not mention lucy');
-  }
+  // (Removed: features.json must not mention Lucy. That rule predates the rebrand; every feature is Lucy's now.)
+  assert.ok(features.features.length > 0);
 
   assert.doesNotMatch(lucy, /#i-wa/);
+});
+
+test('index.html: redesign keeps the waitlist hooks and the design rules', () => {
+  const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  for (const id of ['wl', 'wl-email', 'wl-btn', 'wl-ref', 'wl-ref-h', 'wl-msg', 'wl-iv', 'feat-list', 'pricing']) {
+    assert.match(index, new RegExp(`id="${id}"`), `index.html needs #${id}`);
+  }
+  assert.equal((index.match(/<h1[\s>]/g) || []).length, 1, 'one h1');
+  assert.equal((index.match(/<form[\s>]/g) || []).length, 1, 'one form: one action on the page');
+  assert.doesNotMatch(index, /gradient\(|<canvas|Pixel Square/i, 'no gradients, canvas smoke or pixel font');
+  assert.match(index, /Lucy is free\./);
+  assert.match(index, /Lucy Max is \$100 a month\./);
+  assert.doesNotMatch(index, /\bVision\b/, 'no old product name in the page');
 });
