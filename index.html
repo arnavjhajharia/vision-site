@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f1ea">
-<meta name="description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. Free.">
+<meta name="description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. $0&ndash;20 a month, and Lucy sets your price.">
 <title>Lucy lives in your WhatsApp</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%2316150f'/%3E%3Ccircle cx='20' cy='20' r='11' fill='none' stroke='%23f4f1ea' stroke-width='4'/%3E%3Ccircle cx='20' cy='20' r='4.5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="canonical" href="https://withlucy.ai/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="With Lucy">
 <meta property="og:title" content="Lucy lives in your WhatsApp">
-<meta property="og:description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. Free.">
+<meta property="og:description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. $0&ndash;20 a month, and Lucy sets your price.">
 <meta property="og:url" content="https://withlucy.ai/">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Lucy lives in your WhatsApp">
-<meta name="twitter:description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. Free.">
+<meta name="twitter:description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. $0&ndash;20 a month, and Lucy sets your price.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..650&display=swap">
@@ -71,6 +71,7 @@ h2{font-size:clamp(36px,4.8vw,60px)}
 .wl button{height:52px;background:var(--ink);color:var(--bg);border:0;font:600 16px var(--sans);padding:0 22px;border-radius:12px;cursor:pointer}
 .wl button:disabled{opacity:.5;cursor:default}
 .wl .note{font-size:14px;color:var(--soft)}
+.wl .note .skipc{height:auto;background:none;color:var(--soft);font:inherit;padding:0;border-radius:0;text-decoration:underline;text-underline-offset:3px}
 .wl .msg{font-size:14px;color:var(--soft)}.wl .msg:empty{display:none}
 .inv summary{font-size:14px;color:var(--soft);cursor:pointer;width:max-content;text-decoration:underline;text-underline-offset:3px;list-style:none;padding:6px 0}
 .inv summary::-webkit-details-marker{display:none}
@@ -182,7 +183,7 @@ footer{max-width:var(--w);margin:0 auto;border-top:1px solid var(--rule);padding
 </style>
 </head>
 <body>
-<a class="skip" href="#wl-email">Skip to the waitlist</a>
+<a class="skip" href="#wl-email">Skip to sign up</a>
 <header class="top"><a class="mark" href="#top" aria-label="Lucy, home"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15"/><circle class="d" cx="20" cy="20" r="6"/></svg>Lucy</a><a class="tfl" href="https://terraformlabs.ai"><i aria-hidden="true"></i>A Terraform Labs product</a></header>
 
 <main id="top">
@@ -192,8 +193,8 @@ footer{max-width:var(--w);margin:0 auto;border-top:1px solid var(--rule);padding
     <p class="say">Text her what you need done. She handles your email, your calendar and your reminders, and she asks before anything goes out.</p>
     <form class="wl" id="wl" novalidate>
       <label for="wl-email">Email</label>
-      <div class="row"><input id="wl-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" inputmode="email" required><button id="wl-btn" type="submit">Join the waitlist</button></div>
-      <p class="note">Free. Early access soon.</p>
+      <div class="row"><input id="wl-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" inputmode="email" required><button id="wl-btn" type="submit">Talk to Lucy</button></div>
+      <p class="note">Talk to Lucy for a couple of minutes and she sets your price, anywhere from $0 to $20 a month. <button class="skipc" id="wl-skip" type="button">Skip the call and pay $20</button></p>
       <details class="inv" id="wl-inv"><summary>Did someone invite you?</summary>
         <input id="wl-ref" type="text" name="ref_visible" maxlength="32" placeholder="Their name or code" aria-label="Who invited you? Their name or code" autocomplete="off">
       </details>
@@ -263,12 +264,12 @@ footer{max-width:var(--w);margin:0 auto;border-top:1px solid var(--rule);padding
 <section class="screen solo" id="pricing" aria-labelledby="h-price">
   <div class="price">
     <div>
-      <h2 id="h-price">Lucy is free.</h2>
-      <p>Everything on this page. No card, no trial.</p>
+      <h2 id="h-price">Lucy sets your price.</h2>
+      <p>Anywhere from $0 to $20 a month. When you start, you talk to Lucy for a couple of minutes. She gets to know you and sets a price that fits, and tells you why. About 1 in 10 people pay nothing.</p>
     </div>
     <div class="max">
-      <p class="t">Lucy Max is $100 a month.</p>
-      <p>Tell her about a feature you wish she had and she builds it for you. Or it&rsquo;s free, if you can convince her you&rsquo;re worth it.</p>
+      <p class="t">Or skip the call: $20 a month.</p>
+      <p>Same Lucy, flat price. Take the call whenever you like and she&rsquo;ll re-price you.</p>
     </div>
   </div>
 </section>
@@ -276,7 +277,7 @@ footer{max-width:var(--w);margin:0 auto;border-top:1px solid var(--rule);padding
 <section class="screen solo end" aria-labelledby="h-end">
   <div>
     <h2 id="h-end">She&rsquo;ll text you when it&rsquo;s your turn.</h2>
-    <a class="cta" href="#wl" id="cta-end">Join the waitlist</a>
+    <a class="cta" href="#wl" id="cta-end">Talk to Lucy</a>
   </div>
 </section>
 </main>
@@ -325,6 +326,7 @@ footer{max-width:var(--w);margin:0 auto;border-top:1px solid var(--rule);padding
   refIn.value=refNow;refH.value=refNow;
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var hover=window.matchMedia&&matchMedia('(hover: hover)').matches;
+  var skip=false,sk=document.getElementById('wl-skip');
   var S={email:'',token:'',cfg:null,qs:[],i:0,ans:{},notes:{},reacts:{},typed:{},busy:false,ended:false,status:'new'};
   var U={};
 
@@ -454,9 +456,8 @@ footer{max-width:var(--w);margin:0 auto;border-top:1px solid var(--rule);padding
       var q=r.quote,card=el('div','b v quote');
       var p=el('div','price',q.monthly===0?'Free':money(q.monthly));if(q.monthly!==0)p.appendChild(el('small',null,' '+C('perMonth','/ month')));card.appendChild(p);
       if(q.monthly!==0)card.appendChild(el('div','sub',VI.fill(C('yearly','or {yearly} / year'),{yearly:money(q.yearly)})));
-      card.appendChild(el('div','pow',VI.fill(C('maxNote','Lucy Max is {power}/mo for bespoke features — or free if you convince me you are worth it.'),{power:money(q.powerTierMonthly||100)})));
-      if(q.powerTierCandidate)card.appendChild(el('div','pow',VI.fill(C('power','You look like a Lucy Max fit ({power}/mo). We still decide if you get Max for free.'),{power:money(q.powerTierMonthly)})));
-      card.appendChild(el('div','fine',C('fine','This is a quote, not a charge.')));
+      if(q.reason)card.appendChild(el('div','pow',q.reason));
+      card.appendChild(el('div','fine','This is a quote, not a charge. Ask Lucy any time and she\'ll re-price you.'));
       clearDraft();S.busy=false;
       say([C('thanks',S.cfg.thanks||"Thanks! You're on the list."),{node:card,text:'..........................'}]);
     }).catch(function(){
@@ -500,19 +501,30 @@ footer{max-width:var(--w);margin:0 auto;border-top:1px solid var(--rule);padding
     say(intro.concat([{text:q0.text,hint:q0.hint,q:true}]),function(){S.busy=false;chips()});
   }
 
+  sk.addEventListener('click',function(){skip=true;if(f.requestSubmit)f.requestSubmit();else f.dispatchEvent(new Event('submit',{cancelable:true}))});
+  // Skipped the call: flat $20/month. The call stays one tap away and re-prices them.
+  function skipped(r,email){
+    row.hidden=true;lab.textContent="You're on the list";sk.hidden=true;
+    m.textContent="You're on the list at a flat $20 a month. Talk to Lucy any time and she'll set your price instead.";
+    if(!r.interview||!r.token||!(r.interview.questions||[]).length)return;
+    var t=el('button','go','Talk to Lucy now');t.type='button';
+    t.addEventListener('click',function(){t.remove();start(r,email)});m.appendChild(document.createElement('br'));m.appendChild(t);
+  }
+
   f.addEventListener('submit',function(ev){
     ev.preventDefault();
     if(!iv.hidden)return;
     var v=e.value.trim();
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.textContent='Enter a valid email.';return}
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.textContent='Enter a valid email.';skip=false;return}
     var ref=VI.normalizeRef(refIn.value);refH.value=ref;setRef(ref);
     b.disabled=true;m.textContent='Adding you...';
     post('',{email:v,ref:ref}).then(function(r){
       m.textContent="You're on the list.";e.value='';
       if(r.status==='done'){S.cfg={chat:r.chat||{}};m.textContent=C('alreadyDone',"You're already on the list.");return}
+      if(skip){skipped(r,v.toLowerCase());return}
       if(!r.interview||!r.token||!(r.interview.questions||[]).length)return;
       start(r,v.toLowerCase());
-    }).catch(function(){m.textContent='Something went wrong. Try again.';b.disabled=false;});
+    }).catch(function(){m.textContent='Something went wrong. Try again.';b.disabled=false;skip=false;});
   });
 })();
 </script>

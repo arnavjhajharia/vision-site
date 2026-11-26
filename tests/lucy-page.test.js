@@ -49,7 +49,9 @@ test('index.html: redesign keeps the waitlist hooks and the design rules', () =>
   assert.equal((index.match(/<h1[\s>]/g) || []).length, 1, 'one h1');
   assert.equal((index.match(/<form[\s>]/g) || []).length, 1, 'one form: one action on the page');
   assert.doesNotMatch(index, /gradient\(|<canvas|Pixel Square/i, 'no gradients, canvas smoke or pixel font');
-  assert.match(index, /Lucy is free\./);
-  assert.match(index, /Lucy Max is \$100 a month\./);
+  assert.match(index, /Lucy sets your price\./);
+  assert.match(index, /Or skip the call: \$20 a month\./);
+  assert.match(index, /id="wl-skip"/);
+  assert.doesNotMatch(index, /Lucy Max|\$100|lottery|random/i);
   assert.doesNotMatch(index, /\bVision\b/, 'no old product name in the page');
 });

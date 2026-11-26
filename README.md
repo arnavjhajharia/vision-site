@@ -17,7 +17,7 @@ node --test tests/
 2. Show the chat, not a drawing of the product. Each chat has a `data-shot` name (`dm`, `group`, `approve`, `memory`) so a real capture can replace it.
 3. One typeface (Inter), one ink, paper background. No gradients, glows or decoration. The only colour is inside the chats.
 4. Every sentence is one you could say out loud to a friend.
-5. One action: join the waitlist. Everything else is a link.
+5. One action: talk to Lucy (or skip the call for a flat $20). Everything else is a link.
 
 The full feature list is the closed "Everything Lucy does" line at the bottom, rendered from `features.json`.
 Before and after screenshots: `docs/screenshots/redesign/`.
@@ -54,9 +54,9 @@ New modules go to the manifest's `category` if valid, else `--category <id>` (de
 
 ## Pricing
 
-Lucy is **free**. **Lucy Max** is $100/month for bespoke features — or free if you convince Lucy you're worth it
-(ambassadors get Max free while active). The landing letter and the Features tab (`#pricing`) show both tiers. The
-waitlist interview is onboarding only (always quotes $0 for Lucy).
+Lucy costs **$0–20 a month and Lucy sets each person's price** on a short call when they start (about 1 in 10
+end up paying nothing). Skip the call and it's a flat **$20/month**; take the call later to get re-priced. Full rule
+in [PRICING.md](PRICING.md). The hero CTA is "Talk to Lucy" with a "Skip the call and pay $20" link.
 
 ## Waitlist interview (chat with Lucy)
 
