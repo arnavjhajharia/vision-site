@@ -15,4 +15,4 @@
 Preview status: the hero CTA ("Talk to Lucy") still runs the 5-question chat interview as a stand-in for the
 voice call; the skip link signs people up at $20. The interview questions/quote come from personal-agent
 `data/waitlist-interview.json` (shared with live), which still has the old Max question; update it when this goes live.
-Design note: see the "Lucy pricing" web doc.
+Design note: https://vision.arnavjhajharia.ai/d/tG8qGLvHxguc049x
