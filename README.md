@@ -26,7 +26,7 @@ Before and after screenshots: `docs/screenshots/redesign/`.
 
 ## Lucy
 
-[`lucy.html`](lucy.html) is the standalone page for **Lucy**, the consumer WhatsApp life admin product ([withlucy.com](https://withlucy.com)). It is deliberately omitted from `features.json`, which lists Vision-only capabilities for the Features tab and `sync-features.mjs`. Styling reuses the same CSS custom properties as `index.html` (`--bg`, `--ink`, `--glow`, and the rest).
+[`lucy.html`](lucy.html) is a standalone Lucy page on withlucy.ai that walks through what Lucy does in WhatsApp. It is deliberately omitted from `features.json`, which lists the Lucy modules for the Features tab and `sync-features.mjs`. Styling reuses the same CSS custom properties as `index.html` (`--bg`, `--ink`, `--glow`, and the rest).
 
 ## Features tab
 
