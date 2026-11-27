@@ -25,7 +25,7 @@
    1. One idea per screen.  2. Show the chat, not a drawing of the product.
    3. One typeface, one ink, paper background. No gradients, glows or decoration.
    4. Every sentence is one you could say out loud to a friend.
-   5. One action: join the waitlist. Everything else is a link.
+   5. One action: join the waitlist (then talk to Lucy, or skip the call for a flat $20). Everything else is a link.
    The only colour on the page is inside the chats. */
 :root{
   --bg:#f4f1ea;--ink:#16150f;--soft:#5f5c53;--rule:rgba(22,21,15,.13);
@@ -74,7 +74,8 @@ h2 .g,.price .t .g{color:var(--soft)}
 .wl input:focus{border-color:var(--ink)}
 .wl button{height:52px;background:var(--ink);color:var(--bg);border:0;font:500 16px var(--sans);padding:0 22px;border-radius:999px;cursor:pointer}
 .wl button:disabled{opacity:.5;cursor:default}
-.wl .note{font-size:14px;color:var(--soft)}
+.wl .note{font-size:15px;color:var(--soft)}
+.wl .note strong{font-weight:600;color:var(--ink)}
 .wl .note .skipc{height:auto;background:none;color:var(--soft);font:inherit;padding:0;border-radius:0;text-decoration:underline;text-underline-offset:3px}
 .wl .msg{font-size:14px;color:var(--soft)}.wl .msg:empty{display:none}
 .inv summary{font-size:14px;color:var(--soft);cursor:pointer;width:max-content;text-decoration:underline;text-underline-offset:3px;list-style:none;padding:6px 0}
@@ -216,11 +217,11 @@ img.ill.rv-hide{opacity:0}
 <section class="screen first" aria-labelledby="h-hero">
   <div>
     <h1 id="h-hero">Lucy lives in your WhatsApp.</h1>
-    <p class="say">Text her what you need done. She handles your email, your calendar and your reminders, and she asks before anything goes out.</p>
+    <p class="say">An AI assistant for people whose day runs on WhatsApp. Text her what you need done: your email, your calendar, your reminders. She asks before anything goes out.</p>
     <form class="wl" id="wl" novalidate>
       <label for="wl-email">Email</label>
-      <div class="row"><input id="wl-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" inputmode="email" required><button id="wl-btn" type="submit">Talk to Lucy</button></div>
-      <p class="note">Talk to Lucy for a couple of minutes and she sets your price, anywhere from $0 to $20 a month. <button class="skipc" id="wl-skip" type="button">Skip the call and pay $20</button></p>
+      <div class="row"><input id="wl-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" inputmode="email" required><button id="wl-btn" type="submit">Join the waitlist</button></div>
+      <p class="note"><strong>$0 to $20 a month.</strong> Lucy sets your price on a short call. About 1&nbsp;in&nbsp;10 people pay nothing. <button class="skipc" id="wl-skip" type="button">Skip the call and pay $20</button></p>
       <details class="inv" id="wl-inv"><summary>Did someone invite you?</summary>
         <input id="wl-ref" type="text" name="ref_visible" maxlength="32" placeholder="Their name or code" aria-label="Who invited you? Their name or code" autocomplete="off">
       </details>
@@ -352,7 +353,7 @@ img.ill.rv-hide{opacity:0}
 <section class="screen solo end" aria-labelledby="h-end">
   <div>
     <h2 id="h-end">She&rsquo;ll text you when it&rsquo;s your turn.</h2>
-    <a class="cta" href="#wl" id="cta-end">Talk to Lucy</a>
+    <a class="cta" href="#wl" id="cta-end">Join the waitlist</a>
   </div>
 </section>
 </main>
