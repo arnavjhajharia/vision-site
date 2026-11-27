@@ -1,6 +1,8 @@
 # Lucy site
 
-Landing page for Lucy (With Lucy), served by GitHub Pages from `main` at https://withlucy.ai.
+Landing page for Lucy (withlucy.ai), a Terraform Labs product, served by GitHub Pages from `main`.
+
+Lucy is sold to developers and technical users only: they connect their own Claude Code (their own Claude subscription), run Lucy on their own Mac and link it to WhatsApp. There is no hosted version yet.
 
 The `CNAME` file pins the custom domain `withlucy.ai`; keep it in the repo or GitHub Pages drops the domain.
 
@@ -17,14 +19,14 @@ node --test tests/
 2. Show the chat, not a drawing of the product. Each chat has a `data-shot` name (`dm`, `group`, `approve`, `memory`) so a real capture can replace it.
 3. One typeface (Inter), one ink, paper background. No gradients, glows or decoration. The only colour is inside the chats.
 4. Every sentence is one you could say out loud to a friend.
-5. One action: talk to Lucy (or skip the call for a flat $20). Everything else is a link.
+5. One action: get Lucy ($100 once or $5/month). Everything else is a link.
 
 The full feature list is the closed "Everything Lucy does" line at the bottom, rendered from `features.json`.
 Before and after screenshots: `docs/screenshots/redesign/`.
 
 ## Lucy
 
-[`lucy.html`](lucy.html) is the standalone page for **Lucy**, the consumer WhatsApp life admin product ([withlucy.com](https://withlucy.com)). It is deliberately omitted from `features.json`, which lists Vision-only capabilities for the Features tab and `sync-features.mjs`. Styling reuses the same CSS custom properties as `index.html` (`--bg`, `--ink`, `--glow`, and the rest).
+[`lucy.html`](lucy.html) is a standalone Lucy page on withlucy.ai that walks through what Lucy does in WhatsApp. It is deliberately omitted from `features.json`, which lists the Lucy modules for the Features tab and `sync-features.mjs`. Styling reuses the same CSS custom properties as `index.html` (`--bg`, `--ink`, `--glow`, and the rest).
 
 ## Features tab
 
@@ -54,13 +56,27 @@ New modules go to the manifest's `category` if valid, else `--category <id>` (de
 
 ## Pricing
 
-Lucy costs **$0–20 a month and Lucy sets each person's price** on a short call when they start (about 1 in 10
-end up paying nothing). Skip the call and it's a flat **$20/month**; take the call later to get re-priced. Full rule
-in [PRICING.md](PRICING.md). The hero CTA is "Talk to Lucy" with a "Skip the call and pay $20" link.
+Lucy is a Terraform Labs product, sold to developers who use Claude Code. It runs on the buyer's own Mac with their own
+Claude Code (their own Claude subscription) and connects to their WhatsApp.
 
-## Waitlist interview (chat with Lucy)
+Two options only: **$100 one-time** (lifetime licence) or **$5/month**. The landing letter and the Features tab
+(`#pricing`) show both. The CTA buttons ("Get Lucy — $100 once", "$5/month") go to placeholder checkout anchors in
+`#pricing` (checkout not wired yet, marked TODO).
 
-After signup, Lucy runs a 5-question chat interview and shows a price quote. All copy (greeting, per-answer
+TODO: no payment integration yet.
+
+## Setup (what buyers need)
+
+Requirements: a Mac, Claude Code installed and logged in, a WhatsApp account.
+
+1. Buy Lucy.
+2. Install it on the Mac.
+3. Connect Claude Code.
+4. Scan the WhatsApp QR code.
+
+## Waitlist interview (legacy)
+
+The landing page no longer shows the waitlist form; the code and tests stay for now. After signup, Lucy runs a 5-question chat interview and shows a price quote. All copy (greeting, per-answer
 reactions, branches, chip labels, free-text matching) lives in personal-agent `data/waitlist-interview.json`; the
 page fetches it at signup, so editing that file changes the chat without touching this repo. `interview-core.js` is
 the pure logic (branch picking, typed-answer matching, reactions); `node --test tests/` runs its tests (uses the real
