@@ -1,4 +1,4 @@
-/* Lucy waitlist interview: pure logic shared by the chat UI (index.html) and the tests (tests/).
+/* Lucy (formerly Vision) waitlist interview: pure logic shared by the chat UI (index.html) and the tests (tests/).
    Branch picking mirrors personal-agent src/features/waitlist/interview.js (variantFor / resolveQuestion):
    the first variant whose "when" matches EARLIER answers rewords a question; option ids never change. */
 (function (root) {
