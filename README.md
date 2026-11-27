@@ -54,9 +54,10 @@ New modules go to the manifest's `category` if valid, else `--category <id>` (de
 
 ## Pricing
 
-Lucy costs **$0–20 a month and Lucy sets each person's price** on a short call when they start (about 1 in 10
-end up paying nothing). Skip the call and it's a flat **$20/month**; take the call later to get re-priced. Full rule
-in [PRICING.md](PRICING.md). The hero CTA is "Talk to Lucy" with a "Skip the call and pay $20" link.
+Lucy is a Terraform Labs product, sold to developers who use Claude Code. It runs on the buyer's own Mac with their own
+Claude Code (their own Claude subscription) and connects to their WhatsApp. Two prices: **$100 once** (lifetime licence)
+or **$5/month**. The CTAs are "Get Lucy — $100 once" and "$5/month"; checkout is not wired yet (placeholder anchors in
+`#pricing`, marked TODO).
 
 ## Waitlist interview (chat with Lucy)
 

@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#12110d" media="(prefers-color-scheme: dark)">
-<meta name="description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. $0&ndash;20 a month, and Lucy sets your price.">
-<title>Lucy lives in your WhatsApp</title>
+<meta name="description" content="Lucy runs on your Mac with your own Claude Code and works for you inside WhatsApp. $100 once, or $5 a month.">
+<title>Lucy: your Claude Code, in WhatsApp</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%2316150f'/%3E%3Ccircle cx='20' cy='20' r='11' fill='none' stroke='%23f4f1ea' stroke-width='4'/%3E%3Ccircle cx='20' cy='20' r='4.5' fill='%23f4f1ea'/%3E%3C/svg%3E">
 <link rel="canonical" href="https://withlucy.ai/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="With Lucy">
-<meta property="og:title" content="Lucy lives in your WhatsApp">
-<meta property="og:description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. $0&ndash;20 a month, and Lucy sets your price.">
+<meta property="og:title" content="Lucy: your Claude Code, in WhatsApp">
+<meta property="og:description" content="Lucy runs on your Mac with your own Claude Code and works for you inside WhatsApp. $100 once, or $5 a month.">
 <meta property="og:url" content="https://withlucy.ai/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Lucy lives in your WhatsApp">
-<meta name="twitter:description" content="Lucy is an AI assistant who lives in your WhatsApp chats and groups. Text her what you need done. $0&ndash;20 a month, and Lucy sets your price.">
+<meta name="twitter:title" content="Lucy: your Claude Code, in WhatsApp">
+<meta name="twitter:description" content="Lucy runs on your Mac with your own Claude Code and works for you inside WhatsApp. $100 once, or $5 a month.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap">
@@ -25,7 +25,7 @@
    1. One idea per screen.  2. Show the chat, not a drawing of the product.
    3. One typeface, one ink, paper background. No gradients, glows or decoration.
    4. Every sentence is one you could say out loud to a friend.
-   5. One action: join the waitlist. Everything else is a link.
+   5. One action: get Lucy ($100 once or $5/month). Everything else is a link.
    The only colour on the page is inside the chats. */
 :root{
   --bg:#f4f1ea;--ink:#16150f;--soft:#5f5c53;--rule:rgba(22,21,15,.13);
@@ -108,6 +108,24 @@ h2 .g,.price .t .g{color:var(--soft)}
 
 .end{text-align:left}
 .cta{display:inline-flex;align-items:center;height:52px;margin-top:28px;padding:0 24px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:500;font-size:16px;text-decoration:none}
+/* two ways to buy: the ink button is the one action, the outlined one is the same action billed monthly */
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(24px,3vw,36px)}
+.ctas .cta{margin-top:0}
+.cta.alt{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.need{margin-top:12px;font-size:14px;color:var(--soft)}
+.price .cta{margin-top:20px}
+.price .fine{font-size:14px}
+
+/* setup: what you need, then four steps, as ruled rows like the feature list */
+.setup{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);margin-top:clamp(28px,4vw,48px)}
+.setup h3{font-size:14px;font-weight:600;color:var(--soft);padding-bottom:10px}
+.setup ul,.setup ol{list-style:none}
+.setup li{display:flex;gap:16px;padding:14px 0;border-top:1px solid var(--rule)}
+.setup li b{font-weight:600;color:var(--ink)}
+.setup li span{color:var(--soft)}
+.setup ol li::before{content:counter(s,decimal-leading-zero);counter-increment:s;font:400 13px/1.9 "Geist Mono",ui-monospace,Menlo,monospace;color:var(--soft);flex:none}
+.setup ol{counter-reset:s}
+.setup ul li::before{content:"\2713";color:var(--soft);flex:none}
 
 /* the long list, for people who want it */
 .all{max-width:var(--w);margin:0 auto;border-top:1px solid var(--rule)}
@@ -198,6 +216,8 @@ img.ill.rv-hide{opacity:0}
   .screen>.chat{justify-self:start;max-width:none}
   h1{font-size:clamp(40px,12.4vw,60px)}
   .fi{grid-template-columns:minmax(0,1fr)}
+  .setup{grid-template-columns:minmax(0,1fr)}
+  .ctas .cta{flex:1 1 auto;justify-content:center}
   .wl button{flex:1 1 auto}
   .iv .b{max-width:92%}.iv .log{max-height:62svh}.wl .iv .chips button kbd{display:none}
 }
@@ -209,25 +229,20 @@ img.ill.rv-hide{opacity:0}
 </style>
 </head>
 <body>
-<a class="skip" href="#wl-email">Skip to sign up</a>
+<a class="skip" href="#pricing">Skip to pricing</a>
 <header class="top"><a class="mark" href="#top" aria-label="Lucy, home"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="15"/><circle class="d" cx="20" cy="20" r="6"/></svg>Lucy</a><a class="tfl" href="https://terraformlabs.ai">by <b>Terraform Labs</b></a></header>
 
 <main id="top">
 <section class="screen first" aria-labelledby="h-hero">
   <div>
-    <h1 id="h-hero">Lucy lives in your WhatsApp.</h1>
-    <p class="say">Text her what you need done. She handles your email, your calendar and your reminders, and she asks before anything goes out.</p>
-    <form class="wl" id="wl" novalidate>
-      <label for="wl-email">Email</label>
-      <div class="row"><input id="wl-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" inputmode="email" required><button id="wl-btn" type="submit">Talk to Lucy</button></div>
-      <p class="note">Talk to Lucy for a couple of minutes and she sets your price, anywhere from $0 to $20 a month. <button class="skipc" id="wl-skip" type="button">Skip the call and pay $20</button></p>
-      <details class="inv" id="wl-inv"><summary>Did someone invite you?</summary>
-        <input id="wl-ref" type="text" name="ref_visible" maxlength="32" placeholder="Their name or code" aria-label="Who invited you? Their name or code" autocomplete="off">
-      </details>
-      <input type="hidden" id="wl-ref-h" name="ref">
-      <div class="msg" id="wl-msg" role="status"></div>
-      <div class="iv" id="wl-iv" hidden aria-live="polite"></div>
-    </form>
+    <h1 id="h-hero">Your Claude Code, in WhatsApp.</h1>
+    <p class="say">Lucy runs on your own Mac, on your own Claude Code and Claude subscription. Text her in WhatsApp. She triages your email, sets reminders that ring, runs coding jobs, keeps your calendar and remembers what you tell her. Nothing goes out until you say yes.</p>
+    <!-- TODO: wire real checkout (no payment integration yet). Both buttons go to the pricing section. -->
+    <div class="ctas">
+      <a class="cta" href="#checkout-lifetime">Get Lucy &mdash; $100 once</a>
+      <a class="cta alt" href="#checkout-monthly">$5/month</a>
+    </div>
+    <p class="need">For developers. You need a Mac, Claude Code and WhatsApp.</p>
   </div>
 <figure class="chat" data-shot="dm" aria-label="A WhatsApp chat with Lucy">
   <div class="chat-h"><span class="av" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="13"/><circle class="d" cx="20" cy="20" r="5"/></svg></span><span><b>Lucy</b><small>online</small></span></div>
@@ -240,15 +255,31 @@ img.ill.rv-hide{opacity:0}
 </figure>
 </section>
 
+<section class="screen" aria-labelledby="h-code">
+  <div>
+    <h2 id="h-code">She runs your coding jobs.</h2>
+    <p class="say">Tell Lucy what you want built. She plans it, splits the work across Claude Code sessions, opens the PR and waits for your yes.</p>
+  </div>
+<figure class="chat" data-shot="code" aria-label="Lucy plans a coding job, opens a PR and waits for approval">
+  <div class="chat-h"><span class="av" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="13"/><circle class="d" cx="20" cy="20" r="5"/></svg></span><span><b>Lucy</b><small>online</small></span></div>
+  <ol class="msgs">
+    <li class="m out" style="--i:0"><span class="sr">You: </span>add rate limiting to the api, 100 req/min per key<time>14:02</time></li>
+    <li class="m in" style="--i:1"><span class="sr">Lucy: </span>Plan: 1) middleware with a per-key counter, 2) tests, 3) docs. Running 3 Claude Code sessions.<time>14:02</time></li>
+    <li class="m in" style="--i:2"><span class="sr">Lucy: </span>Done. Tests pass. PR #142 is open: 4 files, +186 &minus;12. Merge it?<time>14:31</time></li>
+    <li class="m out" style="--i:3"><span class="sr">You: </span>yes<time>14:33</time></li>
+  </ol>
+</figure>
+</section>
+
 <section class="how" id="how" aria-labelledby="h-how">
-  <h2 id="h-how">How Lucy works. <span class="g">All in one chat.</span></h2>
+  <h2 id="h-how">What Lucy does. <span class="g">All in one chat.</span></h2>
   <p class="say">You text. She does the rest, and checks with you first.</p>
   <ol class="steps">
     <li>
       <figure class="fig"><img class="ill" data-reveal="bleed" src="assets/ill/ill-text.webp" width="1200" height="670" alt="A relaxed person on a sofa texts on their phone. Lucy, drawn as a friendly round-headed figure, sits on the arm of the sofa reading along with a notebook ready." loading="lazy"></figure>
       <div class="t"><span class="n">01</span><h3>Text her like a friend.</h3>
         <p>No new app. Tell Lucy what you need in WhatsApp, in your own words.</p>
-        <p class="det">WhatsApp, Telegram, iPhone or your laptop.</p>
+        <p class="det">WhatsApp on your phone, or WhatsApp on your Mac.</p>
       </div>
     </li>
     <li>
@@ -277,13 +308,6 @@ img.ill.rv-hide{opacity:0}
       <div class="t"><span class="n">05</span><h3>Add her to the group.</h3>
         <p>Add her to a group. She keeps track of what was decided and who&rsquo;s doing what.</p>
         <p class="det">Ask &ldquo;@Lucy what did we decide?&rdquo;</p>
-      </div>
-    </li>
-    <li>
-      <figure class="fig"><img class="ill" data-reveal="develop" src="assets/ill/ill-call.webp" width="1200" height="670" alt="A person on a city street answers their phone; at the other end of a long looping cord, Lucy speaks into an old desk telephone." loading="lazy"></figure>
-      <div class="t"><span class="n">06</span><h3>She can call you.</h3>
-        <p>When something can&rsquo;t wait, she rings instead of texting.</p>
-        <p class="det">Same Lucy, same memory, out loud.</p>
       </div>
     </li>
   </ol>
@@ -336,23 +360,57 @@ img.ill.rv-hide{opacity:0}
 </figure>
 </section>
 
+<section class="screen solo" id="setup" aria-labelledby="h-setup">
+  <div>
+    <h2 id="h-setup">How it works. <span class="g">Four steps on your Mac.</span></h2>
+    <p class="say">Lucy runs on your machine and uses your own Claude Code. Nothing is hosted for you.</p>
+    <div class="setup">
+      <div>
+        <h3>Requirements</h3>
+        <ul>
+          <li><span><b>A Mac.</b></span></li>
+          <li><span><b>Claude Code, installed and logged in.</b> Your own Claude subscription.</span></li>
+          <li><span><b>A WhatsApp account.</b></span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Steps</h3>
+        <ol>
+          <li><span><b>Buy Lucy.</b> $100 once, or $5 a month.</span></li>
+          <li><span><b>Install it on your Mac.</b></span></li>
+          <li><span><b>Connect your Claude Code.</b> Lucy uses your login, not ours.</span></li>
+          <li><span><b>Scan the WhatsApp QR code.</b> Then text her.</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="screen solo" id="pricing" aria-labelledby="h-price">
   <div class="price">
     <div>
-      <h2 id="h-price">Lucy sets your price. <span class="g">$0 to $20 a month.</span></h2>
-      <p>When you start, you talk to Lucy for a couple of minutes. She gets to know you and sets a price that fits, and tells you why. About 1 in 10 people pay nothing.</p>
+      <h2 id="h-price">Pricing.</h2>
+      <p>Two ways to pay. Same Lucy. You bring your own Claude Code.</p>
     </div>
-    <div class="max">
-      <p class="t">Or skip the call. <span class="g">$20 a month.</span></p>
-      <p>Same Lucy, flat price. Take the call whenever you like and she&rsquo;ll re-price you.</p>
+    <!-- TODO: wire real checkout (no payment integration yet). These hrefs are placeholders. -->
+    <div class="max" id="checkout-lifetime">
+      <p class="t">Lifetime. <span class="g">$100 once.</span></p>
+      <p>One-time payment, lifetime licence. Runs on your Mac with your own Claude Code.</p>
+      <a class="cta" href="#checkout-lifetime">Get Lucy &mdash; $100 once</a>
     </div>
+    <div class="max" id="checkout-monthly">
+      <p class="t">Monthly. <span class="g">$5 a month.</span></p>
+      <p>Same Lucy, billed monthly. Cancel anytime.</p>
+      <a class="cta alt" href="#checkout-monthly">$5/month</a>
+    </div>
+    <p class="fine">Your Claude subscription is separate. Lucy runs on it; she doesn&rsquo;t replace it.</p>
   </div>
 </section>
 
 <section class="screen solo end" aria-labelledby="h-end">
   <div>
-    <h2 id="h-end">She&rsquo;ll text you when it&rsquo;s your turn.</h2>
-    <a class="cta" href="#wl" id="cta-end">Talk to Lucy</a>
+    <h2 id="h-end">Bring your Claude Code. <span class="g">Lucy does the rest.</span></h2>
+    <a class="cta" href="#pricing" id="cta-end">Get Lucy &mdash; $100 once</a>
   </div>
 </section>
 </main>
@@ -362,7 +420,7 @@ img.ill.rv-hide{opacity:0}
   <div id="feat-list"><p class="empty">Loading&hellip;</p></div>
 </details>
 
-<footer><span>With Lucy · a <a href="https://terraformlabs.ai">Terraform Labs</a> product</span><span>Lucy is on WhatsApp, Telegram, iPhone and your laptop. She can call you, too.</span><span id="feat-upd"></span></footer>
+<footer><span>Lucy · a <a href="https://terraformlabs.ai">Terraform Labs</a> product</span><span>Lucy is a Terraform Labs product. She runs on your Mac with your own Claude Code and talks to you in WhatsApp.</span><span id="feat-upd"></span></footer>
 
 <script>
 (function(){
@@ -373,11 +431,6 @@ img.ill.rv-hide{opacity:0}
     var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.35});
     chats.forEach(function(c){io.observe(c)});
   } else chats.forEach(function(c){c.classList.add('on')});
-  // The closing button takes you back to the one form on the page.
-  var end=document.getElementById('cta-end'),email=document.getElementById('wl-email');
-  end.addEventListener('click',function(ev){ev.preventDefault();document.getElementById('wl').scrollIntoView({block:'center'});setTimeout(function(){email.focus({preventScroll:true})},450)});
-  // An invite link (?ref=) or a remembered one opens the invite field so the code is visible.
-  try{if(new URLSearchParams(location.search).get('ref')||localStorage.getItem('vision-wl-ref'))document.getElementById('wl-inv').open=true}catch(_){}
 })();
 </script>
 
@@ -388,7 +441,10 @@ img.ill.rv-hide{opacity:0}
   // (personal-agent data/waitlist-interview.json). Everything user- or server-provided goes in via textContent, never innerHTML.
   var BASE='https://arnavs-mac-mini.tail43dee0.ts.net:8443/api/waitlist';
   var VI=window.VisionInterview,DRAFT='vision-wl-draft';
-  var f=document.getElementById('wl'),m=document.getElementById('wl-msg'),b=document.getElementById('wl-btn'),e=document.getElementById('wl-email'),iv=document.getElementById('wl-iv');
+  var f=document.getElementById('wl');
+  // The waitlist form is gone (Lucy is sold, not waitlisted). Without it this does nothing: no listeners, no network calls.
+  if(!f||!VI)return;
+  var m=document.getElementById('wl-msg'),b=document.getElementById('wl-btn'),e=document.getElementById('wl-email'),iv=document.getElementById('wl-iv');
   var row=f.querySelector('.row'),lab=f.querySelector('label');
   // Ambassador referral: ?ref=<code> is kept in localStorage so it survives the interview and a later visit. The
   // visible field is prefilled from it; whatever is in the field at submit is what gets sent (and remembered).
@@ -532,7 +588,7 @@ img.ill.rv-hide{opacity:0}
       var p=el('div','price',q.monthly===0?'Free':money(q.monthly));if(q.monthly!==0)p.appendChild(el('small',null,' '+C('perMonth','/ month')));card.appendChild(p);
       if(q.monthly!==0)card.appendChild(el('div','sub',VI.fill(C('yearly','or {yearly} / year'),{yearly:money(q.yearly)})));
       if(q.reason)card.appendChild(el('div','pow',q.reason));
-      card.appendChild(el('div','fine','This is a quote, not a charge. Ask Lucy any time and she\'ll re-price you.'));
+      card.appendChild(el('div','fine',C('maxNote','This is not a charge. Lucy is $100 once, or $5 a month.')));
       clearDraft();S.busy=false;
       say([C('thanks',S.cfg.thanks||"Thanks! You're on the list."),{node:card,text:'..........................'}]);
     }).catch(function(){
@@ -577,10 +633,10 @@ img.ill.rv-hide{opacity:0}
   }
 
   sk.addEventListener('click',function(){skip=true;if(f.requestSubmit)f.requestSubmit();else f.dispatchEvent(new Event('submit',{cancelable:true}))});
-  // Skipped the call: flat $20/month. The call stays one tap away and re-prices them.
+  // Skipped the call. Pricing is $100 once or $5/month.
   function skipped(r,email){
     row.hidden=true;lab.textContent="You're on the list";sk.hidden=true;
-    m.textContent="You're on the list at a flat $20 a month. Talk to Lucy any time and she'll set your price instead.";
+    m.textContent=C('power',"You're on the list. Lucy is $100 once, or $5 a month.");
     if(!r.interview||!r.token||!(r.interview.questions||[]).length)return;
     var t=el('button','go','Talk to Lucy now');t.type='button';
     t.addEventListener('click',function(){t.remove();start(r,email)});m.appendChild(document.createElement('br'));m.appendChild(t);
