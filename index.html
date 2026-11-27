@@ -65,7 +65,7 @@ h2{font-size:clamp(32px,4vw,52px)}
 h2 .g,.price .t .g{color:var(--soft)}
 .say{margin-top:clamp(16px,2vw,24px);font-size:clamp(18px,1.6vw,21px);line-height:1.45;color:var(--soft);max-width:30em;text-wrap:pretty}
 
-/* waitlist */
+/* waitlist (dormant: no #wl form on the page right now; kept for the interview script below) */
 .wl{margin-top:clamp(24px,3vw,36px);display:flex;flex-direction:column;gap:10px;max-width:460px}
 .wl label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .wl .row{display:flex;gap:8px;flex-wrap:wrap}
@@ -310,6 +310,13 @@ img.ill.rv-hide{opacity:0}
         <p class="det">Ask &ldquo;@Lucy what did we decide?&rdquo;</p>
       </div>
     </li>
+    <li>
+      <figure class="fig"><img class="ill" data-reveal="develop" src="assets/ill/ill-call.webp" width="1200" height="670" alt="A person on a city street answers their phone; at the other end of a long looping cord, Lucy speaks into an old desk telephone." loading="lazy"></figure>
+      <div class="t"><span class="n">06</span><h3>She can call you.</h3>
+        <p>When something can&rsquo;t wait, she rings instead of texting.</p>
+        <p class="det">Same Lucy, same memory, out loud.</p>
+      </div>
+    </li>
   </ol>
 </section>
 
@@ -392,12 +399,13 @@ img.ill.rv-hide{opacity:0}
       <h2 id="h-price">Pricing.</h2>
       <p>Two ways to pay. Same Lucy. You bring your own Claude Code.</p>
     </div>
-    <!-- TODO: wire real checkout (no payment integration yet). These hrefs are placeholders. -->
+    <!-- TODO: wire real checkout (no payment integration yet). Placeholder: this button links to its own card, so clicking it does nothing visible. Not a broken link. -->
     <div class="max" id="checkout-lifetime">
       <p class="t">Lifetime. <span class="g">$100 once.</span></p>
       <p>One-time payment, lifetime licence. Runs on your Mac with your own Claude Code.</p>
       <a class="cta" href="#checkout-lifetime">Get Lucy &mdash; $100 once</a>
     </div>
+    <!-- TODO: wire real checkout (no payment integration yet). Placeholder: this button links to its own card, so clicking it does nothing visible. Not a broken link. -->
     <div class="max" id="checkout-monthly">
       <p class="t">Monthly. <span class="g">$5 a month.</span></p>
       <p>Same Lucy, billed monthly. Cancel anytime.</p>
@@ -420,7 +428,7 @@ img.ill.rv-hide{opacity:0}
   <div id="feat-list"><p class="empty">Loading&hellip;</p></div>
 </details>
 
-<footer><span>Lucy · a <a href="https://terraformlabs.ai">Terraform Labs</a> product</span><span>Lucy is a Terraform Labs product. She runs on your Mac with your own Claude Code and talks to you in WhatsApp.</span><span id="feat-upd"></span></footer>
+<footer><span>Lucy is a Terraform Labs product</span><span>She runs on your Mac with your own Claude Code and talks to you in WhatsApp.</span><span id="feat-upd"></span></footer>
 
 <script>
 (function(){
@@ -437,8 +445,9 @@ img.ill.rv-hide{opacity:0}
 <script src="interview-core.js"></script>
 <script>
 (function(){
-  // Waitlist signup + chat interview with Lucy. All copy, reactions and branches come from the server config
-  // (personal-agent data/waitlist-interview.json). Everything user- or server-provided goes in via textContent, never innerHTML.
+  // DORMANT: waitlist signup + chat interview with Lucy. The #wl form was removed when Lucy moved to $100 once / $5 a month,
+  // so this returns early below and does nothing (no listeners, no network calls) until a form with id="wl" exists again.
+  // When live, all copy, reactions and branches come from the server config (personal-agent data/waitlist-interview.json). Everything user- or server-provided goes in via textContent, never innerHTML.
   var BASE='https://arnavs-mac-mini.tail43dee0.ts.net:8443/api/waitlist';
   var VI=window.VisionInterview,DRAFT='vision-wl-draft';
   var f=document.getElementById('wl');
