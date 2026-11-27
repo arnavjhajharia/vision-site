@@ -41,17 +41,20 @@ test('lucy.html: page, copy, links, theme, and index nav', () => {
   assert.doesNotMatch(lucy, /#i-wa/);
 });
 
-test('index.html: redesign keeps the waitlist hooks and the design rules', () => {
+test('index.html: Lucy for Claude Code users, $100 once or $5/month, and the design rules', () => {
   const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  for (const id of ['wl', 'wl-email', 'wl-btn', 'wl-ref', 'wl-ref-h', 'wl-msg', 'wl-iv', 'feat-list', 'pricing']) {
+  for (const id of ['setup', 'pricing', 'checkout-lifetime', 'checkout-monthly', 'feat-list', 'feat-upd']) {
     assert.match(index, new RegExp(`id="${id}"`), `index.html needs #${id}`);
   }
   assert.equal((index.match(/<h1[\s>]/g) || []).length, 1, 'one h1');
-  assert.equal((index.match(/<form[\s>]/g) || []).length, 1, 'one form: one action on the page');
+  assert.equal((index.match(/<form[\s>]/g) || []).length, 0, 'no waitlist form: Lucy is bought, not waitlisted');
   assert.doesNotMatch(index, /gradient\(|<canvas|Pixel Square/i, 'no gradients, canvas smoke or pixel font');
-  assert.match(index, /Lucy sets your price\./);
-  assert.match(index, /Or skip the call\. <span class="g">\$20 a month\.<\/span>/);
-  assert.match(index, /id="wl-skip"/);
-  assert.doesNotMatch(index, /Lucy Max|\$100|lottery|random/i);
+  assert.match(index, /Claude Code/);
+  assert.match(index, /Get Lucy &mdash; \$100 once/);
+  assert.match(index, /\$5\/month/);
+  assert.match(index, /Lucy is a Terraform Labs product/);
+  assert.match(index, /TODO: wire real checkout/);
+  assert.doesNotMatch(index, /Vision Max|Join the waitlist|convince|\$0|\$20|Telegram|Lucy sets your price/);
   assert.doesNotMatch(index, /\bVision\b/, 'no old product name in the page');
+  assert.doesNotMatch(index, /stripe|checkout\.js|paypal/i, 'no real payment integration yet');
 });
