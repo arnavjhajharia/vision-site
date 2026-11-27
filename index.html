@@ -311,9 +311,9 @@ img.ill.rv-hide{opacity:0}
       </div>
     </li>
     <li>
-      <figure class="fig"><img class="ill" data-reveal="develop" src="assets/ill/ill-call.webp" width="1200" height="670" alt="A person on a city street answers their phone; at the other end of a long looping cord, Lucy speaks into an old desk telephone." loading="lazy"></figure>
-      <div class="t"><span class="n">06</span><h3>She can call you.</h3>
-        <p>When something can&rsquo;t wait, she rings instead of texting.</p>
+      <figure class="fig"><img class="ill" data-reveal="develop" src="assets/ill/ill-call.webp" width="1200" height="670" alt="A person on a city street listens on their phone while Lucy, at the other end of a long looping cord, talks into an old desk telephone." loading="lazy"></figure>
+      <div class="t"><span class="n">06</span><h3>Talk to her out loud.</h3>
+        <p>Send a WhatsApp voice note and she understands it. Ask, and she answers with one.</p>
         <p class="det">Same Lucy, same memory, out loud.</p>
       </div>
     </li>
@@ -453,6 +453,10 @@ img.ill.rv-hide{opacity:0}
   var f=document.getElementById('wl');
   // The waitlist form is gone (Lucy is sold, not waitlisted). Without it this does nothing: no listeners, no network calls.
   if(!f||!VI)return;
+  // OBSOLETE PRICING BELOW: rework before re-enabling. The quote path (submit(): 'Free' / '{monthly} / month' / 'or {yearly} / year'),
+  // the skip-the-call flow (skipped(), 'Talk to Lucy now') and the C('power')/C('maxNote') strings all come from the old
+  // per-person call-set pricing (up to twenty dollars a month), and server config (personal-agent data/waitlist-interview.json) overrides the fallbacks.
+  // Lucy is now $100 once or $5/month with no call, so do not add a #wl form back until this is rewritten.
   var m=document.getElementById('wl-msg'),b=document.getElementById('wl-btn'),e=document.getElementById('wl-email'),iv=document.getElementById('wl-iv');
   var row=f.querySelector('.row'),lab=f.querySelector('label');
   // Ambassador referral: ?ref=<code> is kept in localStorage so it survives the interview and a later visit. The
@@ -590,6 +594,7 @@ img.ill.rv-hide{opacity:0}
   function payload(){
     var a={};S.qs.forEach(function(q){a[q.id]=S.ans[q.id];if(S.notes[q.id])a[q.id+':text']=S.notes[q.id]});return a;
   }
+  // OBSOLETE: per-person quote from the old call-set pricing. See the note at the top of this script.
   function submit(){
     S.busy=true;
     post('/interview',{email:S.email,token:S.token,answers:payload()}).then(function(r){
@@ -643,6 +648,7 @@ img.ill.rv-hide{opacity:0}
 
   sk.addEventListener('click',function(){skip=true;if(f.requestSubmit)f.requestSubmit();else f.dispatchEvent(new Event('submit',{cancelable:true}))});
   // Skipped the call. Pricing is $100 once or $5/month.
+  // OBSOLETE: old 'skip the call' flow. See the note at the top of this script.
   function skipped(r,email){
     row.hidden=true;lab.textContent="You're on the list";sk.hidden=true;
     m.textContent=C('power',"You're on the list. Lucy is $100 once, or $5 a month.");
